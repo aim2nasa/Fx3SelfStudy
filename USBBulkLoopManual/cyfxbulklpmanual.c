@@ -140,7 +140,11 @@ CyFxBulkLpDmaCallback (
          * Invert all bits in the received data. */
         for (index = 0; index < input->buffer_p.count; index++)
         {
-            input->buffer_p.buffer[index] = ~(uint8_t)input->buffer_p.buffer[index];
+        	//아래는 주어진 버퍼를 ~연산으로 왜곡하는 코드 예제
+        	//input->buffer_p.buffer[index] = ~(uint8_t)input->buffer_p.buffer[index];
+
+        	//주어진 버퍼를 그대로 보내는 코드 예제
+        	input->buffer_p.buffer[index] = (uint8_t)input->buffer_p.buffer[index];
         }
         status = CyU3PDmaChannelCommitBuffer (chHandle, input->buffer_p.count, 0);
         if (status != CY_U3P_SUCCESS)
