@@ -67,6 +67,8 @@ CyFxAppErrorHandler (
 
 void DMA_Sync_mode(void)
 {
+	CyU3PDebugPrint(4,"DMA_Sync_mode start=%d\r\n", glDMA_mode);
+
 	CyU3PDmaChannelConfig_t dmaCfg;
 	CyU3PReturnStatus_t apiRetStatus = CY_U3P_SUCCESS;
 	uint16_t size = 0;
@@ -215,6 +217,7 @@ void DMA_Sync_mode(void)
         }
 
         glDMA_mode = DMA_SYNC;
+        CyU3PDebugPrint(4,"DMA_Sync_mode end=%d\r\n", glDMA_mode);
 }
 
 void
@@ -325,6 +328,7 @@ DMA_Normal_DataIn_Cb (
 
 void DMA_Normal_mode(void)
 {
+	CyU3PDebugPrint(4,"DMA_Normal_mode start=%d\r\n", glDMA_mode);
 	CyU3PDmaChannelConfig_t dmaCfg;
 	CyU3PReturnStatus_t apiRetStatus = CY_U3P_SUCCESS;
 	uint16_t size = 0;
@@ -485,6 +489,7 @@ void DMA_Normal_mode(void)
         }
 
         glDMA_mode = DMA_NORMAL;
+        CyU3PDebugPrint(4,"DMA_Normal_mode end=%d\r\n", glDMA_mode);
 }
 
 
@@ -492,6 +497,7 @@ void DMA_Normal_mode(void)
 // config dma lpbk mode
 void DMA_LoopBack_mode(void)
 {
+	CyU3PDebugPrint(4,"DMA_LoopBack_mode start=%d\r\n", glDMA_mode);
 	CyU3PDmaChannelConfig_t dmaCfg;
 	CyU3PReturnStatus_t apiRetStatus = CY_U3P_SUCCESS;
 	uint16_t size = 0;
@@ -582,6 +588,7 @@ void DMA_LoopBack_mode(void)
     }
 
     glDMA_mode = DMA_LP;
+    CyU3PDebugPrint(4,"DMA_LoopBack_mode end=%d\r\n", glDMA_mode);
 }
 
 
@@ -693,6 +700,8 @@ DMASrcSinkFillInBuffers (
 // config dma sink/source mode
 void DMA_SinkSource_mode(void)
 {
+	CyU3PDebugPrint(4,"DMA_SinkSource_mode start=%d\r\n", glDMA_mode);
+
 	CyU3PDmaChannelConfig_t dmaCfg;
 	CyU3PReturnStatus_t apiRetStatus = CY_U3P_SUCCESS;
 	uint16_t size = 0;
@@ -849,6 +858,7 @@ void DMA_SinkSource_mode(void)
         DMASrcSinkFillInBuffers();
 
         glDMA_mode = DMA_SINKSOURCE;
+        CyU3PDebugPrint(4,"DMA_SinkSource_mode end=%d\r\n", glDMA_mode);
 }
 
 
