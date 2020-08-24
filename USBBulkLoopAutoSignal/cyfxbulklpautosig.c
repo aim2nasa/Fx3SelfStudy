@@ -137,11 +137,13 @@ CyFxBulkLpDmaCallback (
          * received upon reception of every buffer. The DMA transfer will not wait
          * for the commit from CPU. Increment the counter. */
         glDMARxCount++;
+        CyU3PDebugPrint (4, "CY_U3P_DMA_CB_PROD_EVENT\n");
     }
 
     if (type == CY_U3P_DMA_CB_CONS_EVENT)
     {
         glDmaTxCount++;
+        CyU3PDebugPrint (4, "CY_U3P_DMA_CB_CONS_EVENT\n");
     }
 }
 
