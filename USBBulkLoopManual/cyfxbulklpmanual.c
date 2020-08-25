@@ -158,6 +158,7 @@ CyFxBulkLpDmaCallback (
         /* Re-enable the NAK event on each of the endpoints. */
         CyU3PUsbEpEvtControl (CY_FX_EP_PRODUCER, CYU3P_USBEP_NAK_EVT);
         CyU3PUsbEpEvtControl (CY_FX_EP_CONSUMER, CYU3P_USBEP_NAK_EVT);
+        CyU3PDebugPrint (4, "CyFxBulkLpDmaCallback  CY_U3P_DMA_CB_PROD_EVENT done\n");
     }
 }
 
@@ -178,6 +179,7 @@ CyFxBulkLpApplnEptCb (
         {
             glOutNakEvtCount++;
             CyU3PUsbEpEvtControl (CY_FX_EP_PRODUCER, 0);
+            CyU3PDebugPrint (4, "CY_FX_EP_PRODUCER - CYU3P_USBEP_NAK_EVT\n");
         }
     }
     else
@@ -187,6 +189,7 @@ CyFxBulkLpApplnEptCb (
         {
             glInNakEvtCount++;
             CyU3PUsbEpEvtControl (CY_FX_EP_CONSUMER, 0);
+            CyU3PDebugPrint (4, "CY_FX_EP_CONSUMER - CYU3P_USBEP_NAK_EVT\n");
         }
     }
 }
