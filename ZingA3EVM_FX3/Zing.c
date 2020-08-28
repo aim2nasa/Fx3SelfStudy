@@ -1,4 +1,5 @@
 #include "Application.h"
+#include "Zing_internal.h"
 
 // DMA override mode buffers
 uint8_t *glZingControlInBuffer;
