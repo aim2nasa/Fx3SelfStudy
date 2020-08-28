@@ -1332,6 +1332,7 @@ void ApplicationThread(uint32_t Value)
 #endif
 
 #if DBG_LEVEL >= DBG_TYPE_INIT
+    CyU3PDebugPrint(4,"ZING RTL version =  %X\r\n", Zing_GetVersion());
     CyU3PDebugPrint(4,"[init] Completed\r\n");
     CyU3PDebugPrint(4,"----------------------------------------------------------------\r\n");
 #endif
@@ -1355,15 +1356,6 @@ void ApplicationThread(uint32_t Value)
     		CyU3PDebugPrint(4,"[%d] ConIn:%d ConOut:%d DataIn:%d DataOut:%d\r",
     				loop++,glControlInInjected,glControlOutInjected,glDataInInjected,glDataOutInjected);
 #endif
-
-#if DBG_LEVEL >= DBG_TYPE_TMP1
-    		{
-    			uint32_t zing_rtl_ver = 0;
-    			zing_rtl_ver = Zing_GetVersion();
-    			CyU3PDebugPrint(4,"ZING RTL version =  %X\r\n", zing_rtl_ver);
-    		}
-#endif
-
     		CyU3PThreadSleep(1000);
 
 
