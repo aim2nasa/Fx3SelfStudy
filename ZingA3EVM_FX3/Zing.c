@@ -293,76 +293,6 @@ CyU3PReturnStatus_t Zing_Header2(
 	return apiRetStatus;
 }
 
-CyU3PReturnStatus_t Zing_Transfer_Send (
-	CyU3PDmaChannel* dma_ch,
-    uint8_t     *data,		/* pointer to msg */
-    uint32_t    length	 	/* msg size in bytes */
-    )
-{
-    CyU3PDmaBuffer_t    dmaBuf;
-    CyU3PReturnStatus_t status;
-
-    /* Prepare the DMA Buffer */
-    dmaBuf.buffer = data;
-    dmaBuf.status = 0;
-    dmaBuf.size   = (length + 15) & 0xFFF0;      		/* Round up to a multiple of 16.  */
-    dmaBuf.count  = length;			/* Byte count of valid data in buffer.*/
-
-    status = CyU3PDmaChannelSetupSendBuffer (dma_ch, &dmaBuf);
-    if (status == CY_U3P_SUCCESS)
-    {
-        /* Wait for data to be sent */
-        status = CyU3PDmaChannelWaitForCompletion (dma_ch, ZING_HW_TIMEOUT);
-        if (status != CY_U3P_SUCCESS)
-        {
-#if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-            CyU3PDebugPrint(4," + CyU3PDmaChannelWaitForCompletion failed, Error code = %d!\n\r", status);
-#endif
-        }
-    } else {
-#if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-        CyU3PDebugPrint(4," + CyU3PDmaChannelSetupSendBuffer failed, Error code = %d!\n\r", status);
-#endif
-    }
-
-    return status;
-}
-
-CyU3PReturnStatus_t Zing_Transfer_Recv (
-	CyU3PDmaChannel* dma_ch,
-    uint8_t     *data,		/* pointer to msg */
-    uint32_t    length	 	/* msg size in bytes */
-    )
-{
-    CyU3PDmaBuffer_t    dmaBuf;
-    CyU3PReturnStatus_t status;
-
-    /* Prepare the DMA Buffer */
-    dmaBuf.buffer = data;
-    dmaBuf.status = 0;
-    dmaBuf.size   = (length + 15) & 0xFFF0;      		/* Round up to a multiple of 16.  */
-    dmaBuf.count  = length;			/* Byte count of valid data in buffer.*/
-
-    status = CyU3PDmaChannelSetupRecvBuffer (dma_ch, &dmaBuf);
-    if (status == CY_U3P_SUCCESS)
-    {
-        /* Wait for data to be sent */
-        status = CyU3PDmaChannelWaitForCompletion (dma_ch, ZING_HW_TIMEOUT);
-        if (status != CY_U3P_SUCCESS)
-        {
-#if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-            CyU3PDebugPrint(4," + CyU3PDmaChannelWaitForCompletion failed, Error code = %d!\n\r", status);
-#endif
-        }
-    } else {
-#if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-        CyU3PDebugPrint(4," + CyU3PDmaChannelSetupRecvBuffer failed, Error code = %d!\n\r", status);
-#endif
-    }
-
-    return status;
-}
-
 CyU3PReturnStatus_t Zing_RegRead(uint16_t addr, uint8_t* buf, uint16_t len)
 {
 	CyU3PReturnStatus_t status = CY_U3P_SUCCESS;
@@ -403,49 +333,6 @@ CyU3PReturnStatus_t Zing_RegRead(uint16_t addr, uint8_t* buf, uint16_t len)
 #endif
 
 	return status;
-}
-
-void Zing_RegReadFlush(void)
-{
-    uint32_t status;
-    CyU3PDmaBuffer_t    dmaBuf;
-    uint8_t  *in_buffer;
-    ZingHdr_t* zh;
-
-    in_buffer = (uint8_t *)CyU3PDmaBufferAlloc (128);
-
-    /* Wait result */
-    dmaBuf.buffer = in_buffer;
-    dmaBuf.status = 0;
-    dmaBuf.count  = 0;
-    dmaBuf.size   = 128;
-
-	while(1) {
-		status = CyU3PDmaChannelSetupRecvBuffer (&glDMAControlIn, &dmaBuf);
-		if (status == CY_U3P_SUCCESS)
-		{
-			status = CyU3PDmaChannelWaitForCompletion (&glDMAControlIn, ZING_HW_TIMEOUT/4);
-			if (status != CY_U3P_SUCCESS) {
-				CyU3PDmaChannelReset(&glDMAControlIn);
-				break;
-			}else {
-				zh = (ZingHdr_t*)in_buffer;
-				if(zh->interrupt == 1) {
-#if DBG_LEVEL >= DBG_TYPE_ZING
-					CyU3PDebugPrint (4, "[Zing/RegRead] flushed interrupt event pk\r\n");
-					CyU3PDebugPrint (4, "[Zing/RegRead] flushed zh :(MSB-LSB) 0x%x\r\n",*((uint64_t*)in_buffer));
-#endif
-				}
-			}
-		}
-		else {
-
-		}
-		CyU3PThreadSleep (100);
-	}
-
-	CyU3PDmaBufferFree(in_buffer);
-
 }
 
 void Zing_AFC(void)
@@ -1048,19 +935,6 @@ void Zing_SetGPIFBusWidth(uint8_t width)
 #if DBG_LEVEL >= DBG_TYPE_ZING
 	CyU3PDebugPrint (4, "[Zing/BusWidth] %d\r\n", width);
 #endif
-}
-
-void Zing_Test_DataTx (uint32_t repeat, uint32_t length, uint32_t pattern)
-{
-	uint8_t* buf = (uint8_t *)CyU3PDmaBufferAlloc (length);
-	CyU3PMemSet(buf,(uint8_t)pattern,length);
-	int i;
-
-	for(i=0; i<repeat; i++) {
-		Zing_DataWrite2(buf,length);
-	}
-
-	CyU3PDmaBufferFree(buf);
 }
 
 void Zing_Test_DataTx2 (uint32_t repeat, uint32_t length, uint32_t pattern)
