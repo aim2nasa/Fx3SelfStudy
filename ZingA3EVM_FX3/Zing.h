@@ -67,10 +67,4 @@ extern CyU3PReturnStatus_t Zing_Header2(
         uint16_t addr,
         uint16_t payload_size);
 
-// DMA override mode buffers
-extern uint8_t *glZingControlInBuffer;
-extern uint8_t *glZingControlOutBuffer;
-extern uint8_t *glZingDataInBuffer;
-extern uint8_t *glZingDataOutBuffer;
-
 #endif   /* _INCLUDED__ */
