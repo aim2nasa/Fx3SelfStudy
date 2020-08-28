@@ -1348,13 +1348,12 @@ void ApplicationThread(uint32_t Value)
 //        CyU3PGpioSetValue(GPIO57, 0);
 
         // Now run forever
+    	uint32_t loop = 0;
     	while (1)
     	{
 #if DBG_LEVEL >= DBG_TYPE_TR_CNT
-    		CyU3PDebugPrint(4,"glDataOutInjected = %d\r\n", glDataOutInjected);
-    		CyU3PDebugPrint(4,"glDataInInjected = %d\r\n", glDataInInjected);
-    		CyU3PDebugPrint(4,"glControlOutInjected = %d\r\n", glControlOutInjected);
-    		CyU3PDebugPrint(4,"glControlInInjected = %d\r\n\r\n", glControlInInjected);
+    		CyU3PDebugPrint(4,"[%d] ConIn:%d ConOut:%d DataIn:%d DataOut:%d\r",
+    				loop++,glControlInInjected,glControlOutInjected,glDataInInjected,glDataOutInjected);
 #endif
 
 #if DBG_LEVEL >= DBG_TYPE_TMP1
