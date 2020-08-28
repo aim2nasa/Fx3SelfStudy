@@ -1364,7 +1364,7 @@ void ApplicationThread(uint32_t Value)
     		}
 #endif
 
-    		CyU3PThreadSleep(5000);
+    		CyU3PThreadSleep(1000);
 
 
     	}
