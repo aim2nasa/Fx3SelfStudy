@@ -12,7 +12,6 @@ extern CyU3PReturnStatus_t Zing_Header(
         uint16_t addr,          /* addr : zing internal address , address unit = 32bit */
         uint16_t type           /* type : Read/write */);
 extern CyU3PReturnStatus_t Zing_RegRead(uint16_t addr, uint8_t* buf, uint16_t len);
-extern void Zing_AFC(void);
 extern void Zing_AFC2(float f_tg);
 extern void Zing_SetHRCP(uint32_t val);
 extern void Zing_SetPath(uint32_t val);
