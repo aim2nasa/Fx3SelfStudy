@@ -1332,7 +1332,6 @@ void ApplicationThread(uint32_t Value)
 #endif
 
 #if DBG_LEVEL >= DBG_TYPE_INIT
-    CyU3PDebugPrint(4,"ZING RTL version =  %X\r\n", Zing_GetVersion());
     CyU3PDebugPrint(4,"[init] Completed\r\n");
     CyU3PDebugPrint(4,"----------------------------------------------------------------\r\n");
 #endif
