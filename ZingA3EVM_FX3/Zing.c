@@ -613,7 +613,7 @@ CyU3PReturnStatus_t Zing_Transfer_Send2 (
     if (status != CY_U3P_SUCCESS)
     {
 #if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-        CyU3PDebugPrint (4, "CyU3PDmaChannelGetBuffer failed, Error code = %d\n", status);
+        CyU3PDebugPrint (4, "Zing_Transfer_Send2,CyU3PDmaChannelGetBuffer failed, Error code = %d\n", status);
 #endif
     }
     else {
@@ -624,7 +624,7 @@ CyU3PReturnStatus_t Zing_Transfer_Send2 (
 		if (status != CY_U3P_SUCCESS)
 		{
 #if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-			CyU3PDebugPrint (4, "CyU3PDmaChannelCommitBuffer failed, Error code = %d\n", status);
+			CyU3PDebugPrint (4, "Zing_Transfer_Send2,CyU3PDmaChannelCommitBuffer failed, Error code = %d\n", status);
 #endif
 
 		}
@@ -675,7 +675,7 @@ CyU3PReturnStatus_t Zing_Transfer_Recv2 (
 	if (status != CY_U3P_SUCCESS)
 	{
 #if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-		CyU3PDebugPrint (4, "CyU3PDmaChannelGetBuffer failed, Error code = %d\n", status);
+		CyU3PDebugPrint (4, "Zing_Transfer_Recv2,CyU3PDmaChannelGetBuffer failed, Error code = %d\n", status);
 #endif
 	}
 	else {
@@ -686,7 +686,7 @@ CyU3PReturnStatus_t Zing_Transfer_Recv2 (
 		if (status != CY_U3P_SUCCESS)
 		{
 #if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-			CyU3PDebugPrint (4, "CyU3PDmaChannelCommitBuffer failed, Error code = %d\n", status);
+			CyU3PDebugPrint (4, "Zing_Transfer_Recv2,CyU3PDmaChannelCommitBuffer failed, Error code = %d\n", status);
 #endif
 		}
 	}
@@ -969,7 +969,7 @@ CyU3PReturnStatus_t Zing_Transfer_Recv3 (
 	if (status != CY_U3P_SUCCESS)
 	{
 #if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-		CyU3PDebugPrint (4, "CyU3PDmaChannelGetBuffer failed, Error code = %d\n", status);
+		CyU3PDebugPrint (4, "Zing_Transfer_Recv3,CyU3PDmaChannelGetBuffer failed, Error code = %d\n", status);
 #endif
 	}
 	else {
@@ -980,7 +980,7 @@ CyU3PReturnStatus_t Zing_Transfer_Recv3 (
 		if (status != CY_U3P_SUCCESS)
 		{
 #if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-			CyU3PDebugPrint (4, "CyU3PDmaChannelCommitBuffer failed, Error code = %d\n", status);
+			CyU3PDebugPrint (4, "Zing_Transfer_Recv3,CyU3PDmaChannelCommitBuffer failed, Error code = %d\n", status);
 #endif
 		}
 	}

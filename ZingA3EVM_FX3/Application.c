@@ -626,14 +626,14 @@ void DMA_SinkSource_Cb(
             if (status != CY_U3P_SUCCESS)
             {
 #if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-                CyU3PDebugPrint (4, "CyU3PDmaChannelCommitBuffer failed, Error code = %d\n", status);
+                CyU3PDebugPrint (4, "DMA_SinkSource_Cb,CyU3PDmaChannelCommitBuffer failed, Error code = %d\n", status);
 #endif
             }
         }
         else
         {
 #if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-            CyU3PDebugPrint (4, "CyU3PDmaChannelGetBuffer failed, Error code = %d\n", status);
+            CyU3PDebugPrint (4, "DMA_SinkSource_Cb,CyU3PDmaChannelGetBuffer failed, Error code = %d\n", status);
 #endif
         }
     }
@@ -656,7 +656,7 @@ DMASrcSinkFillInBuffers (
         if (stat != CY_U3P_SUCCESS)
         {
 #if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-            CyU3PDebugPrint (4, "CyU3PDmaChannelGetBuffer failed, Error code = %d\n", stat);
+            CyU3PDebugPrint (4, "DMASrcSinkFillInBuffers,CyU3PDmaChannelGetBuffer failed, Error code = %d\n", stat);
 #endif
             CyFxAppErrorHandler(stat);
         }
@@ -666,7 +666,7 @@ DMASrcSinkFillInBuffers (
         if (stat != CY_U3P_SUCCESS)
         {
 #if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-            CyU3PDebugPrint (4, "CyU3PDmaChannelCommitBuffer failed, Error code = %d\n", stat);
+            CyU3PDebugPrint (4, "DMASrcSinkFillInBuffers,CyU3PDmaChannelCommitBuffer failed, Error code = %d\n", stat);
 #endif
             CyFxAppErrorHandler(stat);
         }
@@ -679,7 +679,7 @@ DMASrcSinkFillInBuffers (
         if (stat != CY_U3P_SUCCESS)
         {
 #if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-            CyU3PDebugPrint (4, "CyU3PDmaChannelGetBuffer failed, Error code = %d\n", stat);
+            CyU3PDebugPrint (4, "DMASrcSinkFillInBuffers,CyU3PDmaChannelGetBuffer failed, Error code = %d\n", stat);
 #endif
             CyFxAppErrorHandler(stat);
         }
@@ -689,7 +689,7 @@ DMASrcSinkFillInBuffers (
         if (stat != CY_U3P_SUCCESS)
         {
 #if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-            CyU3PDebugPrint (4, "CyU3PDmaChannelCommitBuffer failed, Error code = %d\n", stat);
+            CyU3PDebugPrint (4, "DMASrcSinkFillInBuffers,CyU3PDmaChannelCommitBuffer failed, Error code = %d\n", stat);
 #endif
             CyFxAppErrorHandler(stat);
         }
@@ -871,8 +871,12 @@ void USBEP0RxThread(uint32_t Value)
 	char        *str_tk;
 	uint32_t    arg[10];
 
+	CyU3PDebugPrint (4, "\n[EP0] USBEP0RxThread start\n");
 	while(1) {
+		CyU3PDebugPrint (4, "\n [EP0] Event waiting...\n");
 		status = CyU3PEventGet (&glEp0Event, EVT_EP0, CYU3P_EVENT_OR_CLEAR, &evStat, CYU3P_WAIT_FOREVER);
+		CyU3PDebugPrint (4, "\n [EP0] EventGet return=%d\n",status);
+
 		if (status == CY_U3P_SUCCESS) {
 			if (evStat & EVT_EP0) {
 #if DBG_LEVEL >= DBG_TYPE_USB_EP0
@@ -885,7 +889,6 @@ void USBEP0RxThread(uint32_t Value)
 					CyU3PDebugPrint (4, "[Host Request/Data] %s \r\n",glHostRxData);
 					CyU3PDebugPrint (4, "[Host CMD] %s \r\n", glHostRxData);
 #endif
-
 					if(strcmp((const char *)glHostRxData, "DMA MODE LP") == 0) {
 						DMA_LoopBack_mode();
 					}
@@ -924,7 +927,9 @@ void USBEP0RxThread(uint32_t Value)
 						}
 					}
 					else if(strcmp((const char *)glHostRxData, "ZING RST") == 0) {
+						CyU3PDebugPrint (4, "\n [EP0] Before Zing_Reset\n");
 						Zing_Reset(0);
+						CyU3PDebugPrint (4, "\n [EP0] After Zing_Reset\n");
 					}
 					else if(strcmp((const char *)glHostRxData, "FX3 RST") == 0) {
 						CyU3PDeviceReset(CyFalse);
@@ -1013,9 +1018,6 @@ void USBEP0RxThread(uint32_t Value)
 						}
 
 					}
-
-
-
 					break;
 				case 4:
 					{
@@ -1036,7 +1038,7 @@ void USBEP0RxThread(uint32_t Value)
 			glHostRxData_idx = 0;
 		}
 	}
-
+	CyU3PDebugPrint (4, "\n[EP0] USBEP0RxThread end\n");
 }
 
 void ControlChThread(uint32_t Value)
