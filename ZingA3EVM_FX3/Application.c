@@ -64,6 +64,21 @@ CyFxAppErrorHandler (
     }
 }
 
+void setDmaChannelCfg(CyU3PDmaChannelConfig_t *pDmaCfg, uint16_t size, uint16_t count, CyU3PDmaSocketId_t prodSckId,
+		CyU3PDmaSocketId_t consSckId, uint32_t notification, CyU3PDmaCallback_t cb)
+{
+	pDmaCfg->size  = size;
+	pDmaCfg->count = count;
+	pDmaCfg->prodSckId = prodSckId;
+	pDmaCfg->consSckId = consSckId;
+	pDmaCfg->dmaMode = CY_U3P_DMA_MODE_BYTE;
+	pDmaCfg->notification = notification;
+	pDmaCfg->cb = cb;
+	pDmaCfg->prodHeader = 0;
+	pDmaCfg->prodFooter = 0;
+	pDmaCfg->consHeader = 0;
+	pDmaCfg->prodAvailCount = 0;
+}
 
 void DMA_Sync_mode(void)
 {
@@ -97,17 +112,7 @@ void DMA_Sync_mode(void)
 	/* Control OUT channel
 	 * Create a DMA Auto Channel between two sockets of the U port and P port
 	 * DMA size is set based on the USB speed. */
-	dmaCfg.size  = size;
-	dmaCfg.count = 8;
-	dmaCfg.prodSckId = CY_U3P_CPU_SOCKET_PROD;
-	dmaCfg.consSckId = CY_U3P_PIB_SOCKET_0;
-	dmaCfg.dmaMode = CY_U3P_DMA_MODE_BYTE;
-	dmaCfg.notification = CY_U3P_DMA_CB_PROD_EVENT;
-	dmaCfg.cb = 0;
-	dmaCfg.prodHeader = 0;
-	dmaCfg.prodFooter = 0;
-	dmaCfg.consHeader = 0;
-	dmaCfg.prodAvailCount = 0;
+	setDmaChannelCfg(&dmaCfg,size,8,CY_U3P_CPU_SOCKET_PROD,CY_U3P_PIB_SOCKET_0,CY_U3P_DMA_CB_PROD_EVENT,0);
 	apiRetStatus = CyU3PDmaChannelCreate (&glDMAControlOut, CY_U3P_DMA_TYPE_MANUAL_OUT, &dmaCfg);
 	if (apiRetStatus != CY_U3P_SUCCESS)
 	{
@@ -127,17 +132,7 @@ void DMA_Sync_mode(void)
 	/* Control IN channel
 	 * Create a DMA Auto Channel between two sockets of the U port and P port
 	 * DMA size is set based on the USB speed. */
-	dmaCfg.size  = size;
-	dmaCfg.count = 8;
-	dmaCfg.prodSckId = CY_U3P_PIB_SOCKET_1;
-	dmaCfg.consSckId = CY_U3P_CPU_SOCKET_CONS;
-	dmaCfg.dmaMode = CY_U3P_DMA_MODE_BYTE;
-	dmaCfg.notification = CY_U3P_DMA_CB_PROD_EVENT;
-	dmaCfg.cb = 0;
-	dmaCfg.prodHeader = 0;
-	dmaCfg.prodFooter = 0;
-	dmaCfg.consHeader = 0;
-	dmaCfg.prodAvailCount = 0;
+	setDmaChannelCfg(&dmaCfg,size,8,CY_U3P_PIB_SOCKET_1,CY_U3P_CPU_SOCKET_CONS,CY_U3P_DMA_CB_PROD_EVENT,0);
 	apiRetStatus = CyU3PDmaChannelCreate (&glDMAControlIn, CY_U3P_DMA_TYPE_MANUAL_IN, &dmaCfg);
 	if (apiRetStatus != CY_U3P_SUCCESS)
 	{
@@ -156,17 +151,7 @@ void DMA_Sync_mode(void)
 
 	/* Data OUT Channel
 	 * Create a DMA Auto channel for U Port -> P Port transfer. */
-	dmaCfg.size  = size * CY_FX_DATA_BURST_LENGTH;
-	dmaCfg.count = 4;
-	dmaCfg.prodSckId = CY_U3P_CPU_SOCKET_PROD;
-	dmaCfg.consSckId = CY_U3P_PIB_SOCKET_2;
-	dmaCfg.dmaMode = CY_U3P_DMA_MODE_BYTE;
-	dmaCfg.notification = CY_U3P_DMA_CB_PROD_EVENT;
-	dmaCfg.cb = 0;
-	dmaCfg.prodHeader = 0;
-	dmaCfg.prodFooter = 0;
-	dmaCfg.consHeader = 0;
-	dmaCfg.prodAvailCount = 0;
+	setDmaChannelCfg(&dmaCfg,size*CY_FX_DATA_BURST_LENGTH,4,CY_U3P_CPU_SOCKET_PROD,CY_U3P_PIB_SOCKET_2,CY_U3P_DMA_CB_PROD_EVENT,0);
 	apiRetStatus = CyU3PDmaChannelCreate (&glDMADataOut, CY_U3P_DMA_TYPE_MANUAL_OUT, &dmaCfg);
 	if (apiRetStatus != CY_U3P_SUCCESS)
 	{
@@ -187,17 +172,7 @@ void DMA_Sync_mode(void)
 
     /* Data IN Channel
     	 * Create a DMA Auto channel for U Port -> P Port transfer. */
-    	dmaCfg.size  = size * CY_FX_DATA_BURST_LENGTH;
-    	dmaCfg.count = 4;
-    	dmaCfg.prodSckId = CY_U3P_PIB_SOCKET_3;
-    	dmaCfg.consSckId = CY_U3P_CPU_SOCKET_CONS;
-    	dmaCfg.dmaMode = CY_U3P_DMA_MODE_BYTE;
-    	dmaCfg.notification = CY_U3P_DMA_CB_PROD_EVENT;
-    	dmaCfg.cb = 0;
-    	dmaCfg.prodHeader = 0;
-    	dmaCfg.prodFooter = 0;
-    	dmaCfg.consHeader = 0;
-    	dmaCfg.prodAvailCount = 0;
+    	setDmaChannelCfg(&dmaCfg,size*CY_FX_DATA_BURST_LENGTH,4,CY_U3P_PIB_SOCKET_3,CY_U3P_CPU_SOCKET_CONS,CY_U3P_DMA_CB_PROD_EVENT,0);
     	apiRetStatus = CyU3PDmaChannelCreate (&glDMADataIn, CY_U3P_DMA_TYPE_MANUAL_IN, &dmaCfg);
     	if (apiRetStatus != CY_U3P_SUCCESS)
     	{
@@ -357,17 +332,7 @@ void DMA_Normal_mode(void)
 	/* Control OUT channel
 	 * Create a DMA Auto Channel between two sockets of the U port and P port
 	 * DMA size is set based on the USB speed. */
-	dmaCfg.size  = size;
-	dmaCfg.count = 8;
-	dmaCfg.prodSckId = CY_U3P_UIB_SOCKET_PROD_1;
-	dmaCfg.consSckId = CY_U3P_PIB_SOCKET_0;
-	dmaCfg.dmaMode = CY_U3P_DMA_MODE_BYTE;
-	dmaCfg.notification = CY_U3P_DMA_CB_PROD_EVENT;
-	dmaCfg.cb = DMA_Normal_CtrlOut_Cb;
-	dmaCfg.prodHeader = 0;
-	dmaCfg.prodFooter = 0;
-	dmaCfg.consHeader = 0;
-	dmaCfg.prodAvailCount = 0;
+	setDmaChannelCfg(&dmaCfg,size,8,CY_U3P_UIB_SOCKET_PROD_1,CY_U3P_PIB_SOCKET_0,CY_U3P_DMA_CB_PROD_EVENT,DMA_Normal_CtrlOut_Cb);
 	apiRetStatus = CyU3PDmaChannelCreate (&glDMAControlOut, CY_U3P_DMA_TYPE_AUTO_SIGNAL, &dmaCfg);
 	if (apiRetStatus != CY_U3P_SUCCESS)
 	{
@@ -389,17 +354,7 @@ void DMA_Normal_mode(void)
 	/* Control IN channel
 	 * Create a DMA Auto Channel between two sockets of the U port and P port
 	 * DMA size is set based on the USB speed. */
-	dmaCfg.size  = size;
-	dmaCfg.count = 8;
-	dmaCfg.prodSckId = CY_U3P_PIB_SOCKET_1;
-	dmaCfg.consSckId = CY_U3P_UIB_SOCKET_CONS_1;
-	dmaCfg.dmaMode = CY_U3P_DMA_MODE_BYTE;
-	dmaCfg.notification = CY_U3P_DMA_CB_PROD_EVENT;
-	dmaCfg.cb = DMA_Normal_CtrlIn_Cb;
-	dmaCfg.prodHeader = 0;
-	dmaCfg.prodFooter = 0;
-	dmaCfg.consHeader = 0;
-	dmaCfg.prodAvailCount = 0;
+	setDmaChannelCfg(&dmaCfg,size,8,CY_U3P_PIB_SOCKET_1,CY_U3P_UIB_SOCKET_CONS_1,CY_U3P_DMA_CB_PROD_EVENT,DMA_Normal_CtrlIn_Cb);
 	apiRetStatus = CyU3PDmaChannelCreate (&glDMAControlIn, CY_U3P_DMA_TYPE_AUTO_SIGNAL, &dmaCfg);
 	if (apiRetStatus != CY_U3P_SUCCESS)
 	{
@@ -420,17 +375,7 @@ void DMA_Normal_mode(void)
 
 	/* Data OUT Channel
 	 * Create a DMA Auto channel for U Port -> P Port transfer. */
-	dmaCfg.size  = size * CY_FX_DATA_BURST_LENGTH;
-	dmaCfg.count = 4;
-	dmaCfg.prodSckId = CY_U3P_UIB_SOCKET_PROD_2;
-	dmaCfg.consSckId = CY_U3P_PIB_SOCKET_2;
-	dmaCfg.dmaMode = CY_U3P_DMA_MODE_BYTE;
-	dmaCfg.notification = CY_U3P_DMA_CB_PROD_EVENT;
-	dmaCfg.cb = DMA_Normal_DataOut_Cb;
-	dmaCfg.prodHeader = 0;
-	dmaCfg.prodFooter = 0;
-	dmaCfg.consHeader = 0;
-	dmaCfg.prodAvailCount = 0;
+	setDmaChannelCfg(&dmaCfg,size*CY_FX_DATA_BURST_LENGTH,4,CY_U3P_UIB_SOCKET_PROD_2,CY_U3P_PIB_SOCKET_2,CY_U3P_DMA_CB_PROD_EVENT,DMA_Normal_DataOut_Cb);
 	apiRetStatus = CyU3PDmaChannelCreate (&glDMADataOut, CY_U3P_DMA_TYPE_AUTO_SIGNAL, &dmaCfg);
 	if (apiRetStatus != CY_U3P_SUCCESS)
 	{
@@ -451,20 +396,13 @@ void DMA_Normal_mode(void)
 
     /* Data IN Channel
     	 * Create a DMA Auto channel for U Port -> P Port transfer. */
-    	dmaCfg.size  = size * CY_FX_DATA_BURST_LENGTH;
-    	dmaCfg.count = 4;
-    	dmaCfg.prodSckId = CY_U3P_PIB_SOCKET_3;
-    	dmaCfg.consSckId = CY_U3P_UIB_SOCKET_CONS_2;
-    	dmaCfg.dmaMode = CY_U3P_DMA_MODE_BYTE;
-    	dmaCfg.notification = CY_U3P_DMA_CB_PROD_EVENT;
+    	setDmaChannelCfg(&dmaCfg,size*CY_FX_DATA_BURST_LENGTH,4,CY_U3P_PIB_SOCKET_3,CY_U3P_UIB_SOCKET_CONS_2,
 #if PACKET_SUSPEND == 1
-    dmaCfg.notification = CY_U3P_DMA_CB_PROD_EVENT | CY_U3P_DMA_CB_PROD_SUSP | CY_U3P_DMA_CB_CONS_SUSP;
+    			CY_U3P_DMA_CB_PROD_EVENT | CY_U3P_DMA_CB_PROD_SUSP | CY_U3P_DMA_CB_CONS_SUSP,
+#else
+    			CY_U3P_DMA_CB_PROD_EVENT,
 #endif
-    	dmaCfg.cb = DMA_Normal_DataIn_Cb;
-    	dmaCfg.prodHeader = 0;
-    	dmaCfg.prodFooter = 0;
-    	dmaCfg.consHeader = 0;
-    	dmaCfg.prodAvailCount = 0;
+    			DMA_Normal_DataIn_Cb);
     	apiRetStatus = CyU3PDmaChannelCreate (&glDMADataIn, CY_U3P_DMA_TYPE_AUTO_SIGNAL, &dmaCfg);
     	if (apiRetStatus != CY_U3P_SUCCESS)
     	{
@@ -526,17 +464,7 @@ void DMA_LoopBack_mode(void)
 	/* Control OUT channel
 	 * Create a DMA Auto Channel between two sockets of the U port and P port
 	 * DMA size is set based on the USB speed. */
-	dmaCfg.size  = size;
-	dmaCfg.count = 8;
-	dmaCfg.prodSckId = CY_U3P_UIB_SOCKET_PROD_1;
-	dmaCfg.consSckId = CY_U3P_UIB_SOCKET_CONS_1;
-	dmaCfg.dmaMode = CY_U3P_DMA_MODE_BYTE;
-	dmaCfg.notification = 0;
-	dmaCfg.cb = NULL;
-	dmaCfg.prodHeader = 0;
-	dmaCfg.prodFooter = 0;
-	dmaCfg.consHeader = 0;
-	dmaCfg.prodAvailCount = 0;
+	setDmaChannelCfg(&dmaCfg,size,8,CY_U3P_UIB_SOCKET_PROD_1,CY_U3P_UIB_SOCKET_CONS_1,0,0);
 	apiRetStatus = CyU3PDmaChannelCreate (&glDMAControlOut, CY_U3P_DMA_TYPE_AUTO, &dmaCfg);
 	if (apiRetStatus != CY_U3P_SUCCESS)
 	{
@@ -558,17 +486,7 @@ void DMA_LoopBack_mode(void)
 
 	/* Data OUT Channel
 	 * Create a DMA Auto channel for U Port -> P Port transfer. */
-	dmaCfg.size  = size * CY_FX_DATA_BURST_LENGTH;
-	dmaCfg.count = 4;
-	dmaCfg.prodSckId = CY_U3P_UIB_SOCKET_PROD_2;
-	dmaCfg.consSckId = CY_U3P_UIB_SOCKET_CONS_2;
-	dmaCfg.dmaMode = CY_U3P_DMA_MODE_BYTE;
-	dmaCfg.notification = 0;
-	dmaCfg.cb = NULL;
-	dmaCfg.prodHeader = 0;
-	dmaCfg.prodFooter = 0;
-	dmaCfg.consHeader = 0;
-	dmaCfg.prodAvailCount = 0;
+	setDmaChannelCfg(&dmaCfg,size*CY_FX_DATA_BURST_LENGTH,4,CY_U3P_UIB_SOCKET_PROD_2,CY_U3P_UIB_SOCKET_CONS_2,0,0);
 	apiRetStatus = CyU3PDmaChannelCreate (&glDMADataOut, CY_U3P_DMA_TYPE_AUTO, &dmaCfg);
 	if (apiRetStatus != CY_U3P_SUCCESS)
 	{
@@ -730,17 +648,7 @@ void DMA_SinkSource_mode(void)
 	/* Control OUT channel
 	 * Create a DMA Auto Channel between two sockets of the U port and P port
 	 * DMA size is set based on the USB speed. */
-	dmaCfg.size  = size;
-	dmaCfg.count = 8;
-	dmaCfg.prodSckId = CY_U3P_UIB_SOCKET_PROD_1;
-	dmaCfg.consSckId = CY_U3P_CPU_SOCKET_CONS;
-	dmaCfg.dmaMode = CY_U3P_DMA_MODE_BYTE;
-	dmaCfg.notification = CY_U3P_DMA_CB_PROD_EVENT;
-	dmaCfg.cb = DMA_SinkSource_Cb;
-	dmaCfg.prodHeader = 0;
-	dmaCfg.prodFooter = 0;
-	dmaCfg.consHeader = 0;
-	dmaCfg.prodAvailCount = 0;
+	setDmaChannelCfg(&dmaCfg,size,8,CY_U3P_UIB_SOCKET_PROD_1,CY_U3P_CPU_SOCKET_CONS,CY_U3P_DMA_CB_PROD_EVENT,DMA_SinkSource_Cb);
 	apiRetStatus = CyU3PDmaChannelCreate (&glDMAControlOut, CY_U3P_DMA_TYPE_MANUAL_IN, &dmaCfg);
 	if (apiRetStatus != CY_U3P_SUCCESS)
 	{
@@ -762,17 +670,7 @@ void DMA_SinkSource_mode(void)
 	/* Control IN channel
 	 * Create a DMA Auto Channel between two sockets of the U port and P port
 	 * DMA size is set based on the USB speed. */
-	dmaCfg.size  = size;
-	dmaCfg.count = 8;
-	dmaCfg.prodSckId = CY_U3P_CPU_SOCKET_PROD;
-	dmaCfg.consSckId = CY_U3P_UIB_SOCKET_CONS_1;
-	dmaCfg.dmaMode = CY_U3P_DMA_MODE_BYTE;
-	dmaCfg.notification = CY_U3P_DMA_CB_CONS_EVENT;
-	dmaCfg.cb = DMA_SinkSource_Cb;
-	dmaCfg.prodHeader = 0;
-	dmaCfg.prodFooter = 0;
-	dmaCfg.consHeader = 0;
-	dmaCfg.prodAvailCount = 0;
+	setDmaChannelCfg(&dmaCfg,size,8,CY_U3P_CPU_SOCKET_PROD,CY_U3P_UIB_SOCKET_CONS_1,CY_U3P_DMA_CB_CONS_EVENT,DMA_SinkSource_Cb);
 	apiRetStatus = CyU3PDmaChannelCreate (&glDMAControlIn, CY_U3P_DMA_TYPE_MANUAL_OUT, &dmaCfg);
 	if (apiRetStatus != CY_U3P_SUCCESS)
 	{
@@ -793,17 +691,7 @@ void DMA_SinkSource_mode(void)
 
 	/* Data OUT Channel
 	 * Create a DMA Auto channel for U Port -> P Port transfer. */
-	dmaCfg.size  = size * CY_FX_DATA_BURST_LENGTH;
-	dmaCfg.count = 4;
-	dmaCfg.prodSckId = CY_U3P_UIB_SOCKET_PROD_2;
-	dmaCfg.consSckId = CY_U3P_CPU_SOCKET_CONS;
-	dmaCfg.dmaMode = CY_U3P_DMA_MODE_BYTE;
-	dmaCfg.notification = CY_U3P_DMA_CB_PROD_EVENT;
-	dmaCfg.cb = DMA_SinkSource_Cb;
-	dmaCfg.prodHeader = 0;
-	dmaCfg.prodFooter = 0;
-	dmaCfg.consHeader = 0;
-	dmaCfg.prodAvailCount = 0;
+	setDmaChannelCfg(&dmaCfg,size*CY_FX_DATA_BURST_LENGTH,4,CY_U3P_UIB_SOCKET_PROD_2,CY_U3P_CPU_SOCKET_CONS,CY_U3P_DMA_CB_PROD_EVENT,DMA_SinkSource_Cb);
 	apiRetStatus = CyU3PDmaChannelCreate (&glDMADataOut, CY_U3P_DMA_TYPE_MANUAL_IN, &dmaCfg);
 	if (apiRetStatus != CY_U3P_SUCCESS)
 	{
@@ -824,17 +712,7 @@ void DMA_SinkSource_mode(void)
 
     /* Data IN Channel
     	 * Create a DMA Auto channel for U Port -> P Port transfer. */
-    	dmaCfg.size  = size * CY_FX_DATA_BURST_LENGTH;
-    	dmaCfg.count = 4;
-    	dmaCfg.prodSckId = CY_U3P_CPU_SOCKET_PROD;
-    	dmaCfg.consSckId = CY_U3P_UIB_SOCKET_CONS_2;
-    	dmaCfg.dmaMode = CY_U3P_DMA_MODE_BYTE;
-    	dmaCfg.notification = CY_U3P_DMA_CB_CONS_EVENT;
-    	dmaCfg.cb = DMA_SinkSource_Cb;
-    	dmaCfg.prodHeader = 0;
-    	dmaCfg.prodFooter = 0;
-    	dmaCfg.consHeader = 0;
-    	dmaCfg.prodAvailCount = 0;
+    	setDmaChannelCfg(&dmaCfg,size*CY_FX_DATA_BURST_LENGTH,4,CY_U3P_CPU_SOCKET_PROD,CY_U3P_UIB_SOCKET_CONS_2,CY_U3P_DMA_CB_CONS_EVENT,DMA_SinkSource_Cb);
     	apiRetStatus = CyU3PDmaChannelCreate (&glDMADataIn, CY_U3P_DMA_TYPE_MANUAL_OUT, &dmaCfg);
     	if (apiRetStatus != CY_U3P_SUCCESS)
     	{
