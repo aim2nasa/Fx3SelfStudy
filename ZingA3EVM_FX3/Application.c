@@ -80,6 +80,42 @@ void setDmaChannelCfg(CyU3PDmaChannelConfig_t *pDmaCfg, uint16_t size, uint16_t 
 	pDmaCfg->prodAvailCount = 0;
 }
 
+void createChannel(const char* name,
+		CyU3PDmaChannelConfig_t *pDmaCfg,uint16_t size,uint16_t count,CyU3PDmaSocketId_t prodSckId,
+		CyU3PDmaSocketId_t consSckId,uint32_t notification,CyU3PDmaCallback_t cb,
+		CyU3PDmaChannel *handle,CyU3PDmaType_t type)
+{
+	CyU3PReturnStatus_t apiRetStatus = CY_U3P_SUCCESS;
+
+	if(strcmp(name,"DmaNormal.DataIn")==0) {
+#if PACKET_SUSPEND == 1
+		notification |= CY_U3P_DMA_CB_PROD_SUSP | CY_U3P_DMA_CB_CONS_SUSP;
+#endif
+	}
+
+	setDmaChannelCfg(pDmaCfg, size, count, prodSckId, consSckId, notification, cb);
+	apiRetStatus = CyU3PDmaChannelCreate (handle, type, pDmaCfg);
+	if (apiRetStatus != CY_U3P_SUCCESS)
+	{
+		CyU3PDebugPrint (4, "(%s) CyU3PDmaChannelCreate failed, Error code = 0x%x\n", name,apiRetStatus);
+		CyFxAppErrorHandler(apiRetStatus);
+	}
+
+	if(strcmp(name,"DmaNormal.DataIn")==0) {
+#if PACKET_SUSPEND == 1
+		CyU3PDmaChannelSetSuspend(&handle,CY_U3P_DMA_SCK_SUSP_EOP,CY_U3P_DMA_SCK_SUSP_EOP);
+#endif
+	}
+
+    /* Set DMA Channel transfer size to INFINITE */
+    apiRetStatus = CyU3PDmaChannelSetXfer (handle, 0);
+    if (apiRetStatus != CY_U3P_SUCCESS)
+    {
+		CyU3PDebugPrint (4, "(%s) CyU3PDmaChannelSetXfer failed, Error code = 0x%x\n", name,apiRetStatus);
+        CyFxAppErrorHandler(apiRetStatus);
+    }
+}
+
 void DMA_Sync_mode(void)
 {
 	CyU3PDebugPrint(4,"DMA_Sync_mode start=%d\r\n", glDMA_mode);
@@ -112,87 +148,31 @@ void DMA_Sync_mode(void)
 	/* Control OUT channel
 	 * Create a DMA Auto Channel between two sockets of the U port and P port
 	 * DMA size is set based on the USB speed. */
-	setDmaChannelCfg(&dmaCfg,size,8,CY_U3P_CPU_SOCKET_PROD,CY_U3P_PIB_SOCKET_0,CY_U3P_DMA_CB_PROD_EVENT,0);
-	apiRetStatus = CyU3PDmaChannelCreate (&glDMAControlOut, CY_U3P_DMA_TYPE_MANUAL_OUT, &dmaCfg);
-	if (apiRetStatus != CY_U3P_SUCCESS)
-	{
-#if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-		CyU3PDebugPrint (4, "CyU3PDmaChannelCreate failed, Error code = %d\n", apiRetStatus);
-#endif
-		CyFxAppErrorHandler(apiRetStatus);
-	}
-    /* Set DMA Channel transfer size to INFINITE */
-    apiRetStatus = CyU3PDmaChannelSetXfer (&glDMAControlOut, 0);
-    if (apiRetStatus != CY_U3P_SUCCESS)
-    {
-        CyU3PDebugPrint (4, "CyU3PDmaChannelSetXfer Failed, Error code = %d\n", apiRetStatus);
-        CyFxAppErrorHandler(apiRetStatus);
-    }
+	createChannel("DmaSync.ControlOut",
+			&dmaCfg,size,8,CY_U3P_CPU_SOCKET_PROD,CY_U3P_PIB_SOCKET_0,CY_U3P_DMA_CB_PROD_EVENT,0,
+			&glDMAControlOut,CY_U3P_DMA_TYPE_MANUAL_OUT);
 
 	/* Control IN channel
 	 * Create a DMA Auto Channel between two sockets of the U port and P port
 	 * DMA size is set based on the USB speed. */
-	setDmaChannelCfg(&dmaCfg,size,8,CY_U3P_PIB_SOCKET_1,CY_U3P_CPU_SOCKET_CONS,CY_U3P_DMA_CB_PROD_EVENT,0);
-	apiRetStatus = CyU3PDmaChannelCreate (&glDMAControlIn, CY_U3P_DMA_TYPE_MANUAL_IN, &dmaCfg);
-	if (apiRetStatus != CY_U3P_SUCCESS)
-	{
-#if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-		CyU3PDebugPrint (4, "CyU3PDmaChannelCreate failed, Error code = %d\n", apiRetStatus);
-#endif
-		CyFxAppErrorHandler(apiRetStatus);
-	}
-    /* Set DMA Channel transfer size to INFINITE */
-    apiRetStatus = CyU3PDmaChannelSetXfer (&glDMAControlIn, 0);
-    if (apiRetStatus != CY_U3P_SUCCESS)
-    {
-        CyU3PDebugPrint (4, "CyU3PDmaChannelSetXfer Failed, Error code = %d\n", apiRetStatus);
-        CyFxAppErrorHandler(apiRetStatus);
-    }
+	createChannel("DmaSync.ControlIn",
+			&dmaCfg,size,8,CY_U3P_PIB_SOCKET_1,CY_U3P_CPU_SOCKET_CONS,CY_U3P_DMA_CB_PROD_EVENT,0,
+			&glDMAControlIn,CY_U3P_DMA_TYPE_MANUAL_IN);
 
 	/* Data OUT Channel
 	 * Create a DMA Auto channel for U Port -> P Port transfer. */
-	setDmaChannelCfg(&dmaCfg,size*CY_FX_DATA_BURST_LENGTH,4,CY_U3P_CPU_SOCKET_PROD,CY_U3P_PIB_SOCKET_2,CY_U3P_DMA_CB_PROD_EVENT,0);
-	apiRetStatus = CyU3PDmaChannelCreate (&glDMADataOut, CY_U3P_DMA_TYPE_MANUAL_OUT, &dmaCfg);
-	if (apiRetStatus != CY_U3P_SUCCESS)
-	{
-#if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-		CyU3PDebugPrint (4, "CyU3PDmaChannelCreate failed, Error code = %d\n", apiRetStatus);
-#endif
-		CyFxAppErrorHandler(apiRetStatus);
-	}
-    /* Set DMA Channel transfer size to INFINITE */
-    apiRetStatus = CyU3PDmaChannelSetXfer (&glDMADataOut, 0);
-    if (apiRetStatus != CY_U3P_SUCCESS)
-    {
-#if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-        CyU3PDebugPrint (4, "CyU3PDmaChannelSetXfer Failed, Error code = %d\n", apiRetStatus);
-#endif
-        CyFxAppErrorHandler(apiRetStatus);
-    }
+	createChannel("DmaSync.DataOut",
+			&dmaCfg,size*CY_FX_DATA_BURST_LENGTH,4,CY_U3P_CPU_SOCKET_PROD,CY_U3P_PIB_SOCKET_2,CY_U3P_DMA_CB_PROD_EVENT,0,
+			&glDMADataOut,CY_U3P_DMA_TYPE_MANUAL_OUT);
 
     /* Data IN Channel
     	 * Create a DMA Auto channel for U Port -> P Port transfer. */
-    	setDmaChannelCfg(&dmaCfg,size*CY_FX_DATA_BURST_LENGTH,4,CY_U3P_PIB_SOCKET_3,CY_U3P_CPU_SOCKET_CONS,CY_U3P_DMA_CB_PROD_EVENT,0);
-    	apiRetStatus = CyU3PDmaChannelCreate (&glDMADataIn, CY_U3P_DMA_TYPE_MANUAL_IN, &dmaCfg);
-    	if (apiRetStatus != CY_U3P_SUCCESS)
-    	{
-#if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-    		CyU3PDebugPrint (4, "CyU3PDmaChannelCreate failed, Error code = %d\n", apiRetStatus);
-#endif
-    		CyFxAppErrorHandler(apiRetStatus);
-    	}
-        /* Set DMA Channel transfer size to INFINITE */
-        apiRetStatus = CyU3PDmaChannelSetXfer (&glDMADataIn, 0);
-        if (apiRetStatus != CY_U3P_SUCCESS)
-        {
-#if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-            CyU3PDebugPrint (4, "CyU3PDmaChannelSetXfer Failed, Error code = %d\n", apiRetStatus);
-#endif
-            CyFxAppErrorHandler(apiRetStatus);
-        }
+	createChannel("DmaSync.DataIn",
+			&dmaCfg,size*CY_FX_DATA_BURST_LENGTH,4,CY_U3P_PIB_SOCKET_3,CY_U3P_CPU_SOCKET_CONS,CY_U3P_DMA_CB_PROD_EVENT,0,
+			&glDMADataIn,CY_U3P_DMA_TYPE_MANUAL_IN);
 
-        glDMA_mode = DMA_SYNC;
-        CyU3PDebugPrint(4,"DMA_Sync_mode end=%d\r\n", glDMA_mode);
+	glDMA_mode = DMA_SYNC;
+	CyU3PDebugPrint(4,"DMA_Sync_mode end=%d\r\n", glDMA_mode);
 }
 
 void
@@ -332,102 +312,31 @@ void DMA_Normal_mode(void)
 	/* Control OUT channel
 	 * Create a DMA Auto Channel between two sockets of the U port and P port
 	 * DMA size is set based on the USB speed. */
-	setDmaChannelCfg(&dmaCfg,size,8,CY_U3P_UIB_SOCKET_PROD_1,CY_U3P_PIB_SOCKET_0,CY_U3P_DMA_CB_PROD_EVENT,DMA_Normal_CtrlOut_Cb);
-	apiRetStatus = CyU3PDmaChannelCreate (&glDMAControlOut, CY_U3P_DMA_TYPE_AUTO_SIGNAL, &dmaCfg);
-	if (apiRetStatus != CY_U3P_SUCCESS)
-	{
-#if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-		CyU3PDebugPrint (4, "CyU3PDmaChannelCreate failed, Error code = %d\n", apiRetStatus);
-#endif
-		CyFxAppErrorHandler(apiRetStatus);
-	}
-    /* Set DMA Channel transfer size to INFINITE */
-    apiRetStatus = CyU3PDmaChannelSetXfer (&glDMAControlOut, 0);
-    if (apiRetStatus != CY_U3P_SUCCESS)
-    {
-#if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-        CyU3PDebugPrint (4, "CyU3PDmaChannelSetXfer Failed, Error code = %d\n", apiRetStatus);
-#endif
-        CyFxAppErrorHandler(apiRetStatus);
-    }
+	createChannel("DmaNormal.ControlOut",
+			&dmaCfg,size,8,CY_U3P_UIB_SOCKET_PROD_1,CY_U3P_PIB_SOCKET_0,CY_U3P_DMA_CB_PROD_EVENT,DMA_Normal_CtrlOut_Cb,
+			&glDMAControlOut,CY_U3P_DMA_TYPE_AUTO_SIGNAL);
 
 	/* Control IN channel
 	 * Create a DMA Auto Channel between two sockets of the U port and P port
 	 * DMA size is set based on the USB speed. */
-	setDmaChannelCfg(&dmaCfg,size,8,CY_U3P_PIB_SOCKET_1,CY_U3P_UIB_SOCKET_CONS_1,CY_U3P_DMA_CB_PROD_EVENT,DMA_Normal_CtrlIn_Cb);
-	apiRetStatus = CyU3PDmaChannelCreate (&glDMAControlIn, CY_U3P_DMA_TYPE_AUTO_SIGNAL, &dmaCfg);
-	if (apiRetStatus != CY_U3P_SUCCESS)
-	{
-#if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-		CyU3PDebugPrint (4, "CyU3PDmaChannelCreate failed, Error code = %d\n", apiRetStatus);
-#endif
-		CyFxAppErrorHandler(apiRetStatus);
-	}
-    /* Set DMA Channel transfer size to INFINITE */
-    apiRetStatus = CyU3PDmaChannelSetXfer (&glDMAControlIn, 0);
-    if (apiRetStatus != CY_U3P_SUCCESS)
-    {
-#if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-        CyU3PDebugPrint (4, "CyU3PDmaChannelSetXfer Failed, Error code = %d\n", apiRetStatus);
-#endif
-        CyFxAppErrorHandler(apiRetStatus);
-    }
+	createChannel("DmaNormal.ControlIn",
+			&dmaCfg,size,8,CY_U3P_PIB_SOCKET_1,CY_U3P_UIB_SOCKET_CONS_1,CY_U3P_DMA_CB_PROD_EVENT,DMA_Normal_CtrlIn_Cb,
+			&glDMAControlIn,CY_U3P_DMA_TYPE_AUTO_SIGNAL);
 
 	/* Data OUT Channel
 	 * Create a DMA Auto channel for U Port -> P Port transfer. */
-	setDmaChannelCfg(&dmaCfg,size*CY_FX_DATA_BURST_LENGTH,4,CY_U3P_UIB_SOCKET_PROD_2,CY_U3P_PIB_SOCKET_2,CY_U3P_DMA_CB_PROD_EVENT,DMA_Normal_DataOut_Cb);
-	apiRetStatus = CyU3PDmaChannelCreate (&glDMADataOut, CY_U3P_DMA_TYPE_AUTO_SIGNAL, &dmaCfg);
-	if (apiRetStatus != CY_U3P_SUCCESS)
-	{
-#if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-		CyU3PDebugPrint (4, "CyU3PDmaChannelCreate failed, Error code = %d\n", apiRetStatus);
-#endif
-		CyFxAppErrorHandler(apiRetStatus);
-	}
-    /* Set DMA Channel transfer size to INFINITE */
-    apiRetStatus = CyU3PDmaChannelSetXfer (&glDMADataOut, 0);
-    if (apiRetStatus != CY_U3P_SUCCESS)
-    {
-#if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-        CyU3PDebugPrint (4, "CyU3PDmaChannelSetXfer Failed, Error code = %d\n", apiRetStatus);
-#endif
-        CyFxAppErrorHandler(apiRetStatus);
-    }
+	createChannel("DmaNormal.DataOut",
+			&dmaCfg,size*CY_FX_DATA_BURST_LENGTH,4,CY_U3P_UIB_SOCKET_PROD_2,CY_U3P_PIB_SOCKET_2,CY_U3P_DMA_CB_PROD_EVENT,DMA_Normal_DataOut_Cb,
+			&glDMADataOut,CY_U3P_DMA_TYPE_AUTO_SIGNAL);
 
     /* Data IN Channel
     	 * Create a DMA Auto channel for U Port -> P Port transfer. */
-    	setDmaChannelCfg(&dmaCfg,size*CY_FX_DATA_BURST_LENGTH,4,CY_U3P_PIB_SOCKET_3,CY_U3P_UIB_SOCKET_CONS_2,
-#if PACKET_SUSPEND == 1
-    			CY_U3P_DMA_CB_PROD_EVENT | CY_U3P_DMA_CB_PROD_SUSP | CY_U3P_DMA_CB_CONS_SUSP,
-#else
-    			CY_U3P_DMA_CB_PROD_EVENT,
-#endif
-    			DMA_Normal_DataIn_Cb);
-    	apiRetStatus = CyU3PDmaChannelCreate (&glDMADataIn, CY_U3P_DMA_TYPE_AUTO_SIGNAL, &dmaCfg);
-    	if (apiRetStatus != CY_U3P_SUCCESS)
-    	{
-#if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-    		CyU3PDebugPrint (4, "CyU3PDmaChannelCreate failed, Error code = %d\n", apiRetStatus);
-#endif
-    		CyFxAppErrorHandler(apiRetStatus);
-    	}
+	createChannel("DmaNormal.DataIn",
+			&dmaCfg,size*CY_FX_DATA_BURST_LENGTH,4,CY_U3P_PIB_SOCKET_3,CY_U3P_UIB_SOCKET_CONS_2,CY_U3P_DMA_CB_PROD_EVENT,DMA_Normal_DataIn_Cb,
+			&glDMADataIn,CY_U3P_DMA_TYPE_AUTO_SIGNAL);
 
-#if PACKET_SUSPEND == 1
-    CyU3PDmaChannelSetSuspend(&glDMADataIn,CY_U3P_DMA_SCK_SUSP_EOP,CY_U3P_DMA_SCK_SUSP_EOP);
-#endif
-
-        /* Set DMA Channel transfer size to INFINITE */
-        apiRetStatus = CyU3PDmaChannelSetXfer (&glDMADataIn, 0);
-        if (apiRetStatus != CY_U3P_SUCCESS)
-        {
-#if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-            CyU3PDebugPrint (4, "CyU3PDmaChannelSetXfer Failed, Error code = %d\n", apiRetStatus);
-#endif
-            CyFxAppErrorHandler(apiRetStatus);
-        }
-
-        glDMA_mode = DMA_NORMAL;
-        CyU3PDebugPrint(4,"DMA_Normal_mode end=%d\r\n", glDMA_mode);
+	glDMA_mode = DMA_NORMAL;
+	CyU3PDebugPrint(4,"DMA_Normal_mode end=%d\r\n", glDMA_mode);
 }
 
 
@@ -464,46 +373,15 @@ void DMA_LoopBack_mode(void)
 	/* Control OUT channel
 	 * Create a DMA Auto Channel between two sockets of the U port and P port
 	 * DMA size is set based on the USB speed. */
-	setDmaChannelCfg(&dmaCfg,size,8,CY_U3P_UIB_SOCKET_PROD_1,CY_U3P_UIB_SOCKET_CONS_1,0,0);
-	apiRetStatus = CyU3PDmaChannelCreate (&glDMAControlOut, CY_U3P_DMA_TYPE_AUTO, &dmaCfg);
-	if (apiRetStatus != CY_U3P_SUCCESS)
-	{
-#if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-		CyU3PDebugPrint (4, "CyU3PDmaChannelCreate failed, Error code = %d\n", apiRetStatus);
-#endif
-		CyFxAppErrorHandler(apiRetStatus);
-	}
-    /* Set DMA Channel transfer size to INFINITE */
-    apiRetStatus = CyU3PDmaChannelSetXfer (&glDMAControlOut, 0);
-    if (apiRetStatus != CY_U3P_SUCCESS)
-    {
-#if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-        CyU3PDebugPrint (4, "CyU3PDmaChannelSetXfer Failed, Error code = %d\n", apiRetStatus);
-#endif
-        CyFxAppErrorHandler(apiRetStatus);
-    }
-
+	createChannel("DmaLoopback.ControlOut",
+			&dmaCfg,size,8,CY_U3P_UIB_SOCKET_PROD_1,CY_U3P_UIB_SOCKET_CONS_1,0,0,
+			&glDMAControlOut,CY_U3P_DMA_TYPE_AUTO);
 
 	/* Data OUT Channel
 	 * Create a DMA Auto channel for U Port -> P Port transfer. */
-	setDmaChannelCfg(&dmaCfg,size*CY_FX_DATA_BURST_LENGTH,4,CY_U3P_UIB_SOCKET_PROD_2,CY_U3P_UIB_SOCKET_CONS_2,0,0);
-	apiRetStatus = CyU3PDmaChannelCreate (&glDMADataOut, CY_U3P_DMA_TYPE_AUTO, &dmaCfg);
-	if (apiRetStatus != CY_U3P_SUCCESS)
-	{
-#if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-		CyU3PDebugPrint (4, "CyU3PDmaChannelCreate failed, Error code = %d\n", apiRetStatus);
-#endif
-		CyFxAppErrorHandler(apiRetStatus);
-	}
-    /* Set DMA Channel transfer size to INFINITE */
-    apiRetStatus = CyU3PDmaChannelSetXfer (&glDMADataOut, 0);
-    if (apiRetStatus != CY_U3P_SUCCESS)
-    {
-#if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-        CyU3PDebugPrint (4, "CyU3PDmaChannelSetXfer Failed, Error code = %d\n", apiRetStatus);
-#endif
-        CyFxAppErrorHandler(apiRetStatus);
-    }
+	createChannel("DmaLoopback.DataOut",
+			&dmaCfg,size*CY_FX_DATA_BURST_LENGTH,4,CY_U3P_UIB_SOCKET_PROD_2,CY_U3P_UIB_SOCKET_CONS_2,0,0,
+			&glDMADataOut,CY_U3P_DMA_TYPE_AUTO);
 
     glDMA_mode = DMA_LP;
     CyU3PDebugPrint(4,"DMA_LoopBack_mode end=%d\r\n", glDMA_mode);
@@ -648,95 +526,33 @@ void DMA_SinkSource_mode(void)
 	/* Control OUT channel
 	 * Create a DMA Auto Channel between two sockets of the U port and P port
 	 * DMA size is set based on the USB speed. */
-	setDmaChannelCfg(&dmaCfg,size,8,CY_U3P_UIB_SOCKET_PROD_1,CY_U3P_CPU_SOCKET_CONS,CY_U3P_DMA_CB_PROD_EVENT,DMA_SinkSource_Cb);
-	apiRetStatus = CyU3PDmaChannelCreate (&glDMAControlOut, CY_U3P_DMA_TYPE_MANUAL_IN, &dmaCfg);
-	if (apiRetStatus != CY_U3P_SUCCESS)
-	{
-#if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-		CyU3PDebugPrint (4, "CyU3PDmaChannelCreate failed, Error code = %d\n", apiRetStatus);
-#endif
-		CyFxAppErrorHandler(apiRetStatus);
-	}
-    /* Set DMA Channel transfer size to INFINITE */
-    apiRetStatus = CyU3PDmaChannelSetXfer (&glDMAControlOut, 0);
-    if (apiRetStatus != CY_U3P_SUCCESS)
-    {
-#if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-        CyU3PDebugPrint (4, "CyU3PDmaChannelSetXfer Failed, Error code = %d\n", apiRetStatus);
-#endif
-        CyFxAppErrorHandler(apiRetStatus);
-    }
+	createChannel("DmaSinkSource.ControlOut",
+			&dmaCfg,size,8,CY_U3P_UIB_SOCKET_PROD_1,CY_U3P_CPU_SOCKET_CONS,CY_U3P_DMA_CB_PROD_EVENT,DMA_SinkSource_Cb,
+			&glDMAControlOut, CY_U3P_DMA_TYPE_MANUAL_IN);
 
 	/* Control IN channel
 	 * Create a DMA Auto Channel between two sockets of the U port and P port
 	 * DMA size is set based on the USB speed. */
-	setDmaChannelCfg(&dmaCfg,size,8,CY_U3P_CPU_SOCKET_PROD,CY_U3P_UIB_SOCKET_CONS_1,CY_U3P_DMA_CB_CONS_EVENT,DMA_SinkSource_Cb);
-	apiRetStatus = CyU3PDmaChannelCreate (&glDMAControlIn, CY_U3P_DMA_TYPE_MANUAL_OUT, &dmaCfg);
-	if (apiRetStatus != CY_U3P_SUCCESS)
-	{
-#if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-		CyU3PDebugPrint (4, "CyU3PDmaChannelCreate failed, Error code = %d\n", apiRetStatus);
-#endif
-		CyFxAppErrorHandler(apiRetStatus);
-	}
-    /* Set DMA Channel transfer size to INFINITE */
-    apiRetStatus = CyU3PDmaChannelSetXfer (&glDMAControlIn, 0);
-    if (apiRetStatus != CY_U3P_SUCCESS)
-    {
-#if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-        CyU3PDebugPrint (4, "CyU3PDmaChannelSetXfer Failed, Error code = %d\n", apiRetStatus);
-#endif
-        CyFxAppErrorHandler(apiRetStatus);
-    }
+	createChannel("DmaSinkSource.ControlIn",
+			&dmaCfg,size,8,CY_U3P_CPU_SOCKET_PROD,CY_U3P_UIB_SOCKET_CONS_1,CY_U3P_DMA_CB_CONS_EVENT,DMA_SinkSource_Cb,
+			&glDMAControlIn, CY_U3P_DMA_TYPE_MANUAL_OUT);
 
 	/* Data OUT Channel
 	 * Create a DMA Auto channel for U Port -> P Port transfer. */
-	setDmaChannelCfg(&dmaCfg,size*CY_FX_DATA_BURST_LENGTH,4,CY_U3P_UIB_SOCKET_PROD_2,CY_U3P_CPU_SOCKET_CONS,CY_U3P_DMA_CB_PROD_EVENT,DMA_SinkSource_Cb);
-	apiRetStatus = CyU3PDmaChannelCreate (&glDMADataOut, CY_U3P_DMA_TYPE_MANUAL_IN, &dmaCfg);
-	if (apiRetStatus != CY_U3P_SUCCESS)
-	{
-#if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-		CyU3PDebugPrint (4, "CyU3PDmaChannelCreate failed, Error code = %d\n", apiRetStatus);
-#endif
-		CyFxAppErrorHandler(apiRetStatus);
-	}
-    /* Set DMA Channel transfer size to INFINITE */
-    apiRetStatus = CyU3PDmaChannelSetXfer (&glDMADataOut, 0);
-    if (apiRetStatus != CY_U3P_SUCCESS)
-    {
-#if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-        CyU3PDebugPrint (4, "CyU3PDmaChannelSetXfer Failed, Error code = %d\n", apiRetStatus);
-#endif
-        CyFxAppErrorHandler(apiRetStatus);
-    }
+	createChannel("DmaSinkSource.DataOut",
+			&dmaCfg,size*CY_FX_DATA_BURST_LENGTH,4,CY_U3P_UIB_SOCKET_PROD_2,CY_U3P_CPU_SOCKET_CONS,CY_U3P_DMA_CB_PROD_EVENT,DMA_SinkSource_Cb,
+			&glDMADataOut, CY_U3P_DMA_TYPE_MANUAL_IN);
 
     /* Data IN Channel
     	 * Create a DMA Auto channel for U Port -> P Port transfer. */
-    	setDmaChannelCfg(&dmaCfg,size*CY_FX_DATA_BURST_LENGTH,4,CY_U3P_CPU_SOCKET_PROD,CY_U3P_UIB_SOCKET_CONS_2,CY_U3P_DMA_CB_CONS_EVENT,DMA_SinkSource_Cb);
-    	apiRetStatus = CyU3PDmaChannelCreate (&glDMADataIn, CY_U3P_DMA_TYPE_MANUAL_OUT, &dmaCfg);
-    	if (apiRetStatus != CY_U3P_SUCCESS)
-    	{
-#if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-    		CyU3PDebugPrint (4, "CyU3PDmaChannelCreate failed, Error code = %d\n", apiRetStatus);
-#endif
-    		CyFxAppErrorHandler(apiRetStatus);
-    	}
-        /* Set DMA Channel transfer size to INFINITE */
-        apiRetStatus = CyU3PDmaChannelSetXfer (&glDMADataIn, 0);
-        if (apiRetStatus != CY_U3P_SUCCESS)
-        {
-#if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-            CyU3PDebugPrint (4, "CyU3PDmaChannelSetXfer Failed, Error code = %d\n", apiRetStatus);
-#endif
-            CyFxAppErrorHandler(apiRetStatus);
-        }
+	createChannel("DmaSinkSource.DataIn",
+			&dmaCfg,size*CY_FX_DATA_BURST_LENGTH,4,CY_U3P_CPU_SOCKET_PROD,CY_U3P_UIB_SOCKET_CONS_2,CY_U3P_DMA_CB_CONS_EVENT,DMA_SinkSource_Cb,
+			&glDMADataIn, CY_U3P_DMA_TYPE_MANUAL_OUT);
 
+	DMASrcSinkFillInBuffers();
 
-        //
-        DMASrcSinkFillInBuffers();
-
-        glDMA_mode = DMA_SINKSOURCE;
-        CyU3PDebugPrint(4,"DMA_SinkSource_mode end=%d\r\n", glDMA_mode);
+	glDMA_mode = DMA_SINKSOURCE;
+	CyU3PDebugPrint(4,"DMA_SinkSource_mode end=%d\r\n", glDMA_mode);
 }
 
 
