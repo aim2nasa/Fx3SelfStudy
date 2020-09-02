@@ -826,23 +826,15 @@ void ApplicationThread(uint32_t Value)
 	CyU3PDebugPrint(4,"----------------------------------------------------------------\r\n");
 #endif
 
-	Status = CY_U3P_SUCCESS;
-	if (Status == CY_U3P_SUCCESS)
+	uint32_t loop = 0;
+	while (1)
 	{
-		// Now run forever
-		uint32_t loop = 0;
-		while (1)
-		{
 #if DBG_LEVEL >= DBG_TYPE_TR_CNT
-			CyU3PDebugPrint(4,"[%d] ConIn:%d ConOut:%d DataIn:%d DataOut:%d\r",
-					loop++,glControlInInjected,glControlOutInjected,glDataInInjected,glDataOutInjected);
+		CyU3PDebugPrint(4,"[%d] ConIn:%d ConOut:%d DataIn:%d DataOut:%d\r",
+				loop++,glControlInInjected,glControlOutInjected,glDataInInjected,glDataOutInjected);
 #endif
-			CyU3PThreadSleep(1000);
-		}
+		CyU3PThreadSleep(1000);
 	}
-#if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-	CyU3PDebugPrint(4, "\r\nApplication failed to initialize. Error code: %d.\r\n", Status);
-#endif
 
-	while (1);		// Hang here
+	while (1);	// Hang here
 }
