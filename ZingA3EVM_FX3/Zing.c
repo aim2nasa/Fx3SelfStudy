@@ -161,27 +161,22 @@ CyU3PReturnStatus_t Zing_Init(void)
 
 CyU3PReturnStatus_t Zing_PLLConfig(void)
 {
-	CyU3PReturnStatus_t apiRetStatus = CY_U3P_SUCCESS;
-	uint8_t   buffer[] = {0x6F,0x00,0x00,0x00,0x00,0x90,0x01,0x00,0x00,0x00,0x00};
-	uint8_t   rxbuffer[11] = {0,};
-    uint8_t   devAddr   = I2C_DeviceAddress;
-    uint8_t   regAddr   = 0x00;
-
+	CyU3PReturnStatus_t apiRetStatus;
+	uint8_t buffer[] = {0x6F,0x00,0x00,0x00,0x00,0x90,0x01,0x00,0x00,0x00,0x00};
+	uint8_t rxbuffer[11] = {0,};
+	uint8_t devAddr = I2C_DeviceAddress;
+	uint8_t regAddr = 0x00;
 
 	apiRetStatus = I2C_Write(devAddr,regAddr,buffer,sizeof(buffer));
+	if(apiRetStatus!=CY_U3P_SUCCESS) return apiRetStatus;
 
 	apiRetStatus = I2C_Read(devAddr,regAddr,rxbuffer,sizeof(rxbuffer));
 
-#if DBG_LEVEL >= DBG_TYPE_I2C
-	{
-		uint8_t i;
-		CyU3PDebugPrint (4, "[I2C/RD] ");
-		for(i=0;i<sizeof(rxbuffer);i++) {
-			CyU3PDebugPrint (4, "0x%X, ",rxbuffer[i]);
-		}
-		CyU3PDebugPrint (4, "\r\n");
-	}
-#endif
+	#if DBG_LEVEL >= DBG_TYPE_I2C
+	CyU3PDebugPrint(4, "[I2C/RD] ");
+	for(uint8_t i=0;i<sizeof(rxbuffer);i++) CyU3PDebugPrint(4, "0x%X, ",rxbuffer[i]);
+	CyU3PDebugPrint(4, "\r\n");
+	#endif
 
 	return apiRetStatus;
 }
