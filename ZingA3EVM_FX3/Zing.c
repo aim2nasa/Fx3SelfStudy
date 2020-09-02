@@ -260,7 +260,7 @@ CyU3PReturnStatus_t Zing_Header(
 	return apiRetStatus;
 }
 
-CyU3PReturnStatus_t Zing_Header2(
+void Zing_Header2(
         uint8_t *pt,            /* pt : buffer pointer */
         uint16_t dir,
         uint16_t interrupt,
@@ -272,26 +272,19 @@ CyU3PReturnStatus_t Zing_Header2(
         uint16_t addr,
         uint16_t payload_size)
 {
-	CyU3PReturnStatus_t apiRetStatus = CY_U3P_SUCCESS;
-
-	ZingHdr_t  *p_hdr;
-
+	ZingHdr_t *p_hdr;
 	memset(pt,0,ZING_HDR_SIZE);
-
 	p_hdr = (ZingHdr_t *)pt;
 
-    p_hdr->dir = dir;
-    p_hdr->interrupt = interrupt;
-    p_hdr->target = target;
-    p_hdr->type = type;
-    p_hdr->req_resp = req_resp;
-    p_hdr->fr_type = fr_type;
-    p_hdr->intr_flags = intr_flags;
-    p_hdr->addr = addr;
-    p_hdr->length = payload_size;
-
-
-	return apiRetStatus;
+	p_hdr->dir = dir;
+	p_hdr->interrupt = interrupt;
+	p_hdr->target = target;
+	p_hdr->type = type;
+	p_hdr->req_resp = req_resp;
+	p_hdr->fr_type = fr_type;
+	p_hdr->intr_flags = intr_flags;
+	p_hdr->addr = addr;
+	p_hdr->length = payload_size;
 }
 
 CyU3PReturnStatus_t Zing_RegRead(uint16_t addr, uint8_t* buf, uint16_t len)
@@ -995,7 +988,7 @@ CyU3PReturnStatus_t Zing_Management_Send (
 {
 	CyU3PReturnStatus_t status=CY_U3P_SUCCESS;
 
-	status = Zing_Header2(glZingControlOutBuffer,0,0,0,1,0,1,0,0,length);
+	Zing_Header2(glZingControlOutBuffer,0,0,0,1,0,1,0,0,length);
 	memcpy(glZingControlOutBuffer+ZING_HDR_SIZE, data, length);
 	status = Zing_Transfer_Send2(&glDMAControlOut,glZingControlOutBuffer,length+ZING_HDR_SIZE);
 

@@ -34,7 +34,7 @@ CyU3PReturnStatus_t Zing_Transfer_Recv2 (
 void Zing_DataReadFlush(void);
 void Zing_SetGPIFBusWidth(uint8_t width);
 
-CyU3PReturnStatus_t Zing_Header2(
+void Zing_Header2(
         uint8_t *pt,            /* pt : buffer pointer */
         uint16_t dir,
         uint16_t interrupt,
