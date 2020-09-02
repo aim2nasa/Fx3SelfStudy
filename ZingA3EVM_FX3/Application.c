@@ -116,6 +116,26 @@ void createChannel(const char* name,
     }
 }
 
+void channelReset()
+{
+	//Abort & destroy DMAs
+	CyU3PDmaChannelAbort(&glDMAControlOut);
+	CyU3PDmaChannelAbort(&glDMAControlIn);
+	CyU3PDmaChannelAbort(&glDMADataOut);
+	CyU3PDmaChannelAbort(&glDMADataIn);
+
+	CyU3PDmaChannelDestroy(&glDMAControlOut);
+	CyU3PDmaChannelDestroy(&glDMAControlIn);
+	CyU3PDmaChannelDestroy(&glDMADataOut);
+	CyU3PDmaChannelDestroy(&glDMADataIn);
+
+	//Flush the Endpoint memory
+	CyU3PUsbFlushEp(CY_FX_EP_PRODUCER);
+	CyU3PUsbFlushEp(CY_FX_EP_CONSUMER);
+	CyU3PUsbFlushEp(CY_FX_EP_PRODUCER_2);
+	CyU3PUsbFlushEp(CY_FX_EP_CONSUMER_2);
+}
+
 void DMA_Sync_mode(void)
 {
 	CyU3PDebugPrint(4,"DMA_Sync_mode start=%d\r\n", glDMA_mode);
@@ -124,22 +144,7 @@ void DMA_Sync_mode(void)
 	CyU3PReturnStatus_t apiRetStatus = CY_U3P_SUCCESS;
 	uint16_t size = 0;
 
-	// abort & destroy DMAs
-    CyU3PDmaChannelAbort(&glDMAControlOut);
-    CyU3PDmaChannelAbort(&glDMAControlIn);
-    CyU3PDmaChannelAbort(&glDMADataOut);
-    CyU3PDmaChannelAbort(&glDMADataIn);
-
-	CyU3PDmaChannelDestroy(&glDMAControlOut);
-	CyU3PDmaChannelDestroy(&glDMAControlIn);
-	CyU3PDmaChannelDestroy(&glDMADataOut);
-	CyU3PDmaChannelDestroy(&glDMADataIn);
-
-    /* Flush the Endpoint memory */
-    CyU3PUsbFlushEp(CY_FX_EP_PRODUCER);
-    CyU3PUsbFlushEp(CY_FX_EP_CONSUMER);
-    CyU3PUsbFlushEp(CY_FX_EP_PRODUCER_2);
-    CyU3PUsbFlushEp(CY_FX_EP_CONSUMER_2);
+	channelReset();
 
 	// reconfig DMAs
 
@@ -288,22 +293,7 @@ void DMA_Normal_mode(void)
 	CyU3PReturnStatus_t apiRetStatus = CY_U3P_SUCCESS;
 	uint16_t size = 0;
 
-	// abort & destroy DMAs
-    CyU3PDmaChannelAbort(&glDMAControlOut);
-    CyU3PDmaChannelAbort(&glDMAControlIn);
-    CyU3PDmaChannelAbort(&glDMADataOut);
-    CyU3PDmaChannelAbort(&glDMADataIn);
-
-	CyU3PDmaChannelDestroy(&glDMAControlOut);
-	CyU3PDmaChannelDestroy(&glDMAControlIn);
-	CyU3PDmaChannelDestroy(&glDMADataOut);
-	CyU3PDmaChannelDestroy(&glDMADataIn);
-
-    /* Flush the Endpoint memory */
-    CyU3PUsbFlushEp(CY_FX_EP_PRODUCER);
-    CyU3PUsbFlushEp(CY_FX_EP_CONSUMER);
-    CyU3PUsbFlushEp(CY_FX_EP_PRODUCER_2);
-    CyU3PUsbFlushEp(CY_FX_EP_CONSUMER_2);
+	channelReset();
 
 	// reconfig DMAs
 
@@ -349,22 +339,7 @@ void DMA_LoopBack_mode(void)
 	CyU3PReturnStatus_t apiRetStatus = CY_U3P_SUCCESS;
 	uint16_t size = 0;
 
-	// abort & destroy DMAs
-    CyU3PDmaChannelAbort(&glDMAControlOut);
-    CyU3PDmaChannelAbort(&glDMAControlIn);
-    CyU3PDmaChannelAbort(&glDMADataOut);
-    CyU3PDmaChannelAbort(&glDMADataIn);
-
-	CyU3PDmaChannelDestroy(&glDMAControlOut);
-	CyU3PDmaChannelDestroy(&glDMAControlIn);
-	CyU3PDmaChannelDestroy(&glDMADataOut);
-	CyU3PDmaChannelDestroy(&glDMADataIn);
-
-    /* Flush the Endpoint memory */
-    CyU3PUsbFlushEp(CY_FX_EP_PRODUCER);
-    CyU3PUsbFlushEp(CY_FX_EP_CONSUMER);
-    CyU3PUsbFlushEp(CY_FX_EP_PRODUCER_2);
-    CyU3PUsbFlushEp(CY_FX_EP_CONSUMER_2);
+	channelReset();
 
 	// reconfig DMAs
 
@@ -502,22 +477,7 @@ void DMA_SinkSource_mode(void)
 	CyU3PReturnStatus_t apiRetStatus = CY_U3P_SUCCESS;
 	uint16_t size = 0;
 
-	// abort & destroy DMAs
-    CyU3PDmaChannelAbort(&glDMAControlOut);
-    CyU3PDmaChannelAbort(&glDMAControlIn);
-    CyU3PDmaChannelAbort(&glDMADataOut);
-    CyU3PDmaChannelAbort(&glDMADataIn);
-
-	CyU3PDmaChannelDestroy(&glDMAControlOut);
-	CyU3PDmaChannelDestroy(&glDMAControlIn);
-	CyU3PDmaChannelDestroy(&glDMADataOut);
-	CyU3PDmaChannelDestroy(&glDMADataIn);
-
-    /* Flush the Endpoint memory */
-    CyU3PUsbFlushEp(CY_FX_EP_PRODUCER);
-    CyU3PUsbFlushEp(CY_FX_EP_CONSUMER);
-    CyU3PUsbFlushEp(CY_FX_EP_PRODUCER_2);
-    CyU3PUsbFlushEp(CY_FX_EP_CONSUMER_2);
+	channelReset();
 
 	// reconfig DMAs
 
