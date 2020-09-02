@@ -112,7 +112,7 @@ void createChannel(const char* name,
     if (apiRetStatus != CY_U3P_SUCCESS)
     {
 		CyU3PDebugPrint (4, "(%s) CyU3PDmaChannelSetXfer failed, Error code = 0x%x\n", name,apiRetStatus);
-        CyFxAppErrorHandler(apiRetStatus);
+		CyFxAppErrorHandler(apiRetStatus);
     }
 }
 
