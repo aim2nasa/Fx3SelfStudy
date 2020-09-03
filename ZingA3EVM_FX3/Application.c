@@ -788,8 +788,8 @@ void ApplicationThread(uint32_t Value)
 
 	CyU3PDebugPrint(4,"Git:%s\n",GIT_INFO);
 
-	USBEP0RxThread_Create();
-	CyU3PDebugPrint(4,"[init] EP0 Vendor Ch\r\n");
+	Status = USBEP0RxThread_Create();
+	CheckStatus("USBEP0RxThread_Create", Status);
 
 	Status = SetupGPIO();
 	CheckStatus("SetupGPIO", Status);
@@ -814,7 +814,9 @@ void ApplicationThread(uint32_t Value)
 	//Zing_SetHRCP(PPC);
 	Zing_SetHRCP(DEV);
 
-	USB_Connect();
+	Status = USB_Connect();
+	CheckStatus("USB_Connect", Status);
+
 	while(glIsApplnActive == 0) {
 		CyU3PThreadSleep(100);
 	}
