@@ -786,34 +786,33 @@ void ApplicationThread(uint32_t Value)
 	Status = InitializeDebugConsole(6);
 	CheckStatus("InitializeDebugConsole", Status);
 
-#if DBG_LEVEL >= DBG_TYPE_INIT
-	CyU3PDebugPrint(4,"----------------------------------------------------------------\r\n");
-	CyU3PDebugPrint(4,"[init] Debug Console\r\n");
-#endif
 	CyU3PDebugPrint(4,"Git:%s\n",GIT_INFO);
 
 	USBEP0RxThread_Create();
-#if DBG_LEVEL >= DBG_TYPE_INIT
 	CyU3PDebugPrint(4,"[init] EP0 Vendor Ch\r\n");
-#endif
-	Status = SetupGPIO();
-	Status = I2C_Init();
-	Status = USB_Init();
-	Status = PIB_Init();
 
-#if DBG_LEVEL >= DBG_TYPE_INIT
-	CyU3PDebugPrint(4,"[init] GPIO, I2C, USB, PIB\r\n");
-#endif
+	Status = SetupGPIO();
+	CheckStatus("SetupGPIO", Status);
+
+	Status = I2C_Init();
+	CheckStatus("I2C_Init", Status);
+
+	Status = USB_Init();
+	CheckStatus("USB_Init", Status);
+
+	Status = PIB_Init();
+	CheckStatus("PIB_Init", Status);
 
 	DMA_Sync_mode();
 	Status = ControlChThread_Create();
+	CheckStatus("ControlChThread_Create", Status);
+
 	Status = Zing_Init();
+	CheckStatus("Zing_Init", Status);
+
 	//Zing_AutoHRCP();
 	//Zing_SetHRCP(PPC);
 	Zing_SetHRCP(DEV);
-#if DBG_LEVEL >= DBG_TYPE_INIT
-	CyU3PDebugPrint(4,"[init] Zing\r\n");
-#endif
 
 	USB_Connect();
 	while(glIsApplnActive == 0) {
@@ -821,14 +820,9 @@ void ApplicationThread(uint32_t Value)
 	}
 
 	DMA_Normal_mode();
-#if DBG_LEVEL >= DBG_TYPE_INIT
 	CyU3PDebugPrint(4,"[init] DMA\r\n");
-#endif
 
-#if DBG_LEVEL >= DBG_TYPE_INIT
 	CyU3PDebugPrint(4,"[init] Completed\r\n");
-	CyU3PDebugPrint(4,"----------------------------------------------------------------\r\n");
-#endif
 
 	uint32_t loop = 0;
 	while (1)
