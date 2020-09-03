@@ -212,7 +212,7 @@ CyU3PReturnStatus_t Zing_RegWrite(uint16_t addr, uint8_t* buf, uint16_t len)
         return CY_U3P_ERROR_BAD_SIZE;
     }
 
-	apiRetStatus = Zing_Header(glZingControlOutBuffer,len,addr,ZING_HDR_ACTION_WRITE);
+	Zing_Header(glZingControlOutBuffer,len,addr,ZING_HDR_ACTION_WRITE);
 	memcpy(glZingControlOutBuffer+ZING_HDR_SIZE, buf, len);
 	apiRetStatus = Zing_Transfer_Send2(&glDMAControlOut,glZingControlOutBuffer,len+ZING_HDR_SIZE);
 #if DBG_LEVEL >= DBG_TYPE_ZING_TR
@@ -229,30 +229,21 @@ CyU3PReturnStatus_t Zing_RegWrite(uint16_t addr, uint8_t* buf, uint16_t len)
 	return apiRetStatus;
 }
 
-CyU3PReturnStatus_t Zing_Header(
+void Zing_Header(
         uint8_t *pt,            /* pt : buffer pointer */
         uint16_t payload_size,  /* payload_size : memory size in bytes */
         uint16_t addr,          /* addr : zing internal address , address unit = 32bit */
         uint16_t type           /* type : Read/write */)
 {
-	CyU3PReturnStatus_t apiRetStatus = CY_U3P_SUCCESS;
-
-	ZingHdr_t  *p_hdr;
-
+	ZingHdr_t *p_hdr;
 	memset(pt,0,ZING_HDR_SIZE);
 
 	p_hdr = (ZingHdr_t *)pt;
-    p_hdr->dir = ZING_HDR_DIR_EGRESS;
-//    p_hdr->interrupt = 0;               /* invalid for Egress */
-    p_hdr->target = ZING_HDR_TARGET_REG;
-    p_hdr->type = type;
-//    p_hdr->req_resp = 0;                /* invalid for Register */
-//    p_hdr->fr_type = 0;                 /* invalid for Register */
-    p_hdr->addr = addr;
-    p_hdr->length = payload_size;
-
-
-	return apiRetStatus;
+	p_hdr->dir = ZING_HDR_DIR_EGRESS;
+	p_hdr->target = ZING_HDR_TARGET_REG;
+	p_hdr->type = type;
+	p_hdr->addr = addr;
+	p_hdr->length = payload_size;
 }
 
 void Zing_Header2(
@@ -303,7 +294,7 @@ CyU3PReturnStatus_t Zing_RegRead(uint16_t addr, uint8_t* buf, uint16_t len)
         return CY_U3P_ERROR_BAD_SIZE;
     }
 
-    status = Zing_Header(glZingControlOutBuffer,len,addr,ZING_HDR_ACTION_READ);
+    Zing_Header(glZingControlOutBuffer,len,addr,ZING_HDR_ACTION_READ);
     status = Zing_Transfer_Send2(&glDMAControlOut,glZingControlOutBuffer,ZING_HDR_SIZE);
 
     status = CyU3PEventGet (&glControlChEvent, EVT_CTLCH0, CYU3P_EVENT_OR_CLEAR, &evStat, CYU3P_WAIT_FOREVER);

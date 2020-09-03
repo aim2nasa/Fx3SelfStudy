@@ -10,7 +10,7 @@
 
 CyU3PReturnStatus_t Zing_PLLConfig(void);
 void Zing_AllocBuffer(void);
-CyU3PReturnStatus_t Zing_Header(
+void Zing_Header(
 		uint8_t *pt,            /* pt : buffer pointer */
         uint16_t payload_size,  /* payload_size : memory size in bytes */
         uint16_t addr,          /* addr : zing internal address , address unit = 32bit */
