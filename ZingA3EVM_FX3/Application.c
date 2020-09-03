@@ -783,7 +783,9 @@ void ApplicationThread(uint32_t Value)
 {
 	CyU3PReturnStatus_t Status;
 
-	InitializeDebugConsole(6);
+	Status = InitializeDebugConsole(6);
+	CheckStatus("InitializeDebugConsole", Status);
+
 #if DBG_LEVEL >= DBG_TYPE_INIT
 	CyU3PDebugPrint(4,"----------------------------------------------------------------\r\n");
 	CyU3PDebugPrint(4,"[init] Debug Console\r\n");

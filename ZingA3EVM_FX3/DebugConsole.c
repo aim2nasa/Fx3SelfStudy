@@ -167,7 +167,7 @@ void Uart_ConsoleThread(uint32_t Value)
     }
 }
 
-void InitializeDebugConsole(uint8_t TraceLevel)
+CyU3PReturnStatus_t InitializeDebugConsole(uint8_t TraceLevel)
 {
 	CyU3PUartConfig_t uartConfig;
 	CyU3PDmaChannelConfig_t dmaConfig;
@@ -252,6 +252,5 @@ void InitializeDebugConsole(uint8_t TraceLevel)
 	CheckStatus("CyU3PThreadCreate", ret);
 
 	// Wait for the thread to be set up
-	ret = CyU3PSemaphoreGet(&ThreadSignal, CYU3P_WAIT_FOREVER);
-	CheckStatus("CyU3PSemaphoreGet", ret);
+	return CyU3PSemaphoreGet(&ThreadSignal, CYU3P_WAIT_FOREVER);
 }
