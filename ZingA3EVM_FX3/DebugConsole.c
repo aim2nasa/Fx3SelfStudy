@@ -149,17 +149,20 @@ void Uart_ConsoleThread(uint32_t Value)
     }
 }
 
-CyU3PReturnStatus_t InitializeDebugConsole(uint8_t TraceLevel)
+void InitializeDebugConsole(uint8_t TraceLevel)
 {
-    CyU3PUartConfig_t uartConfig;
-    CyU3PDmaChannelConfig_t dmaConfig;
-    CyU3PReturnStatus_t Status = CY_U3P_SUCCESS;
-    CyU3PSemaphore ThreadSignal;
-    void* StackPtr;
+	CyU3PUartConfig_t uartConfig;
+	CyU3PDmaChannelConfig_t dmaConfig;
+	CyU3PReturnStatus_t apiRetStatus = CY_U3P_SUCCESS;
+	uint32_t ret = CY_U3P_SUCCESS;
+	CyU3PSemaphore ThreadSignal;
+	void* StackPtr;
 
-    Status = CyU3PUartInit();										// Start the UART driver
+	apiRetStatus = CyU3PUartInit();		// Start the UART driver
+	if (apiRetStatus != CY_U3P_SUCCESS)
+		CyFxAppErrorHandler(apiRetStatus);
 
-    CyU3PMemSet ((uint8_t *)&uartConfig, 0, sizeof (uartConfig));
+	CyU3PMemSet ((uint8_t *)&uartConfig, 0, sizeof (uartConfig));
 	uartConfig.baudRate = CY_U3P_UART_BAUDRATE_115200;
 	uartConfig.stopBit  = CY_U3P_UART_ONE_STOP_BIT;
 	uartConfig.parity   = CY_U3P_UART_NO_PARITY;
@@ -167,19 +170,31 @@ CyU3PReturnStatus_t InitializeDebugConsole(uint8_t TraceLevel)
 	uartConfig.rxEnable = CyTrue;
 	uartConfig.flowCtrl = CyFalse;
 	uartConfig.isDma    = CyTrue;
-	Status = CyU3PUartSetConfig(&uartConfig, UartCallback);				// Configure the UART hardware
 
-    Status = CyU3PUartTxSetBlockXfer(0xFFFFFFFF);						// Send as much data as I need to
+	apiRetStatus = CyU3PUartSetConfig(&uartConfig, UartCallback);			// Configure the UART hardware
+	if (apiRetStatus != CY_U3P_SUCCESS)
+		CyFxAppErrorHandler(apiRetStatus);
 
-	Status = CyU3PDebugInit(CY_U3P_LPP_SOCKET_UART_CONS, TraceLevel);	// Attach the Debug driver above the UART driver
-	if (Status == CY_U3P_SUCCESS) glDebugTxEnabled = CyTrue;
-	CyU3PDebugPreamble(CyFalse);										// Skip preamble, debug info is targeted for a person
+	apiRetStatus = CyU3PUartTxSetBlockXfer(0xFFFFFFFF);						// Send as much data as I need to
+	if (apiRetStatus != CY_U3P_SUCCESS)
+		CyFxAppErrorHandler(apiRetStatus);
+
+	apiRetStatus = CyU3PDebugInit(CY_U3P_LPP_SOCKET_UART_CONS, TraceLevel);	// Attach the Debug driver above the UART driver
+	if (apiRetStatus == CY_U3P_SUCCESS)
+		glDebugTxEnabled = CyTrue;
+	else
+		CyFxAppErrorHandler(apiRetStatus);
+
+	CyU3PDebugPreamble(CyFalse);											// Skip preamble, debug info is targeted for a person
 
 	// Now setup a DMA channel to receive characters from the Uart Rx
-	Status = CyU3PUartRxSetBlockXfer(0xFFFFFFFFU);
+	apiRetStatus = CyU3PUartRxSetBlockXfer(0xFFFFFFFFU);
+	if (apiRetStatus != CY_U3P_SUCCESS)
+		CyFxAppErrorHandler(apiRetStatus);
+
 	CyU3PMemSet((uint8_t *)&dmaConfig, 0, sizeof(dmaConfig));
-	dmaConfig.size  		= 16;									// Minimum size allowed, I only need 1 byte
-	dmaConfig.count 		= 10;									// I can't type faster than the Uart Callback routine!
+	dmaConfig.size  		= 16;											// Minimum size allowed, I only need 1 byte
+	dmaConfig.count 		= 10;											// I can't type faster than the Uart Callback routine!
 	dmaConfig.prodSckId		= CY_U3P_LPP_SOCKET_UART_PROD;
 	dmaConfig.consSckId 	= CY_U3P_CPU_SOCKET_CONS;
 	dmaConfig.dmaMode 		= CY_U3P_DMA_MODE_BYTE;
@@ -190,43 +205,55 @@ CyU3PReturnStatus_t InitializeDebugConsole(uint8_t TraceLevel)
 	dmaConfig.consHeader = 0;
 	dmaConfig.prodAvailCount = 0;
 
-	Status = CyU3PDmaChannelCreate(&glUARTtoCPU_Handle, CY_U3P_DMA_TYPE_MANUAL_IN, &dmaConfig);
-    if (Status != CY_U3P_SUCCESS) CyU3PDmaChannelDestroy(&glUARTtoCPU_Handle);
-    else
-    {
-		Status = CyU3PDmaChannelSetXfer(&glUARTtoCPU_Handle, 0);
-    }
+	apiRetStatus = CyU3PDmaChannelCreate(&glUARTtoCPU_Handle, CY_U3P_DMA_TYPE_MANUAL_IN, &dmaConfig);
+	if (apiRetStatus != CY_U3P_SUCCESS){
+		CyU3PDebugPrint (4, "CyU3PDmaChannelCreate failed, Error code = %d\n", apiRetStatus);
+		CyFxAppErrorHandler(apiRetStatus);
+	}
 
-    CyU3PThreadSleep (1000);
-    CyU3PDmaChannelDiscardBuffer(&glUARTtoCPU_Handle);
-    CyU3PThreadSleep (100);
-    CyU3PDmaChannelReset(&glUARTtoCPU_Handle);
-    CyU3PThreadSleep (100);
-    CyU3PDmaChannelSetXfer(&glUARTtoCPU_Handle, 0);
+	apiRetStatus = CyU3PDmaChannelSetXfer(&glUARTtoCPU_Handle, 0);
+	if (apiRetStatus != CY_U3P_SUCCESS){
+		CyU3PDebugPrint (4, "CyU3PDmaChannelSetXfer failed, Error code = %d\n", apiRetStatus);
+		CyFxAppErrorHandler(apiRetStatus);
+	}
 
-    // Create a Queue for the Debug_Console to use
-    Status = CyU3PQueueCreate(&Uart_DebugQueue, sizeof (CyU3PDmaBuffer_t), Uart_Queue, sizeof(Uart_Queue));
+	CyU3PThreadSleep (1000);
+	CyU3PDmaChannelDiscardBuffer(&glUARTtoCPU_Handle);
+	CyU3PThreadSleep (100);
+	CyU3PDmaChannelReset(&glUARTtoCPU_Handle);
 
-    // I need to create a thread that will manage the Queue
-    // I also need a signal to let me know that this thread is running
-    Status = CyU3PSemaphoreCreate(&ThreadSignal, 0);
-    StackPtr = CyU3PMemAlloc(DEBUG_THREAD_STACK_SIZE);
-    Status = CyU3PThreadCreate(&Uart_DebugThread,        // Handle to my Application Thread
-            "30:Uart_Debug_Thread",                      // Thread ID and name
-            Uart_ConsoleThread,                          // Thread entry function
-            (uint32_t)&ThreadSignal,                    // Parameter passed to Thread
-            StackPtr,                                   // Pointer to the allocated thread stack
-            DEBUG_THREAD_STACK_SIZE,                    // Allocated thread stack size
-            DEBUG_THREAD_PRIORITY,                      // Thread priority
-            DEBUG_THREAD_PRIORITY,                      // = Thread priority so no preemption
-            CYU3P_NO_TIME_SLICE,                        // Time slice no supported
-            CYU3P_AUTO_START                            // Start the thread immediately
-            );
+	// Create a Queue for the Debug_Console to use
+	ret = CyU3PQueueCreate(&Uart_DebugQueue, sizeof (CyU3PDmaBuffer_t), Uart_Queue, sizeof(Uart_Queue));
+	if (ret != CY_U3P_SUCCESS){
+		CyU3PDebugPrint (4, "CyU3PQueueCreate failed, Error code = %d\n", apiRetStatus);
+		CyFxAppErrorHandler(apiRetStatus);
+	}
 
-    // Wait for the thread to be set up
-    Status = CyU3PSemaphoreGet(&ThreadSignal, CYU3P_WAIT_FOREVER);
+	// I need to create a thread that will manage the Queue
+	// I also need a signal to let me know that this thread is running
+	ret = CyU3PSemaphoreCreate(&ThreadSignal, 0);
+	if (apiRetStatus != CY_U3P_SUCCESS){
+		CyU3PDebugPrint (4, "CyU3PSemaphoreCreate failed, Error code = %d\n", apiRetStatus);
+		CyFxAppErrorHandler(apiRetStatus);
+	}
 
+	StackPtr = CyU3PMemAlloc(DEBUG_THREAD_STACK_SIZE);
+	ret = CyU3PThreadCreate(&Uart_DebugThread,          // Handle to my Application Thread
+			"30:Uart_Debug_Thread",                     // Thread ID and name
+			Uart_ConsoleThread,                         // Thread entry function
+			(uint32_t)&ThreadSignal,                    // Parameter passed to Thread
+			StackPtr,                                   // Pointer to the allocated thread stack
+			DEBUG_THREAD_STACK_SIZE,                    // Allocated thread stack size
+			DEBUG_THREAD_PRIORITY,                      // Thread priority
+			DEBUG_THREAD_PRIORITY,                      // = Thread priority so no preemption
+			CYU3P_NO_TIME_SLICE,                        // Time slice no supported
+			CYU3P_AUTO_START                            // Start the thread immediately
+			);
 
-    return Status;
+	// Wait for the thread to be set up
+	ret = CyU3PSemaphoreGet(&ThreadSignal, CYU3P_WAIT_FOREVER);
+	if (ret != CY_U3P_SUCCESS){
+		CyU3PDebugPrint (4, "CyU3PSemaphoreGet failed, Error code = %d\n", apiRetStatus);
+		CyFxAppErrorHandler(apiRetStatus);
+	}
 }
-

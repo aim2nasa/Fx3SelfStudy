@@ -10,6 +10,6 @@ extern void dma_uart_cb(
 );
 
 extern void Uart_ConsoleThread(uint32_t Value);
-extern CyU3PReturnStatus_t InitializeDebugConsole(uint8_t TraceLevel);
+extern void InitializeDebugConsole(uint8_t TraceLevel);
 
 #endif   /* _INCLUDED__ */
