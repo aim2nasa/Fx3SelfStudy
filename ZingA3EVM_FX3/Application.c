@@ -1,4 +1,5 @@
 #include "Application.h"
+#include "gitcommit.h"
 
 //App thread, flag
 CyU3PThread ApplicationThreadHandle;	//Handle to my Application Thread
@@ -787,6 +788,7 @@ void ApplicationThread(uint32_t Value)
 	CyU3PDebugPrint(4,"----------------------------------------------------------------\r\n");
 	CyU3PDebugPrint(4,"[init] Debug Console\r\n");
 #endif
+	CyU3PDebugPrint(4,"Git:%s\n",GIT_INFO);
 
 	USBEP0RxThread_Create();
 #if DBG_LEVEL >= DBG_TYPE_INIT
