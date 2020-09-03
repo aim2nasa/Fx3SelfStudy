@@ -117,7 +117,6 @@ void channelReset()
 
 void DMA_Sync_mode(void)
 {
-	CyU3PDebugPrint(4,"DMA_Sync_mode start=%d\r\n", glDMA_mode);
 	CyU3PDmaChannelConfig_t dmaCfg;
 	uint16_t size = 1024; // super speed <- assumed condition , temporary code
 
@@ -140,7 +139,7 @@ void DMA_Sync_mode(void)
 		&glDMADataIn,CY_U3P_DMA_TYPE_MANUAL_IN);
 
 	glDMA_mode = DMA_SYNC;
-	CyU3PDebugPrint(4,"DMA_Sync_mode end=%d\r\n", glDMA_mode);
+	CyU3PDebugPrint(4,"DMA_Sync_mode(%d) done\n", glDMA_mode);
 }
 
 void DMA_Normal_CtrlOut_Cb(CyU3PDmaChannel *handle,CyU3PDmaCbType_t evtype,CyU3PDmaCBInput_t *input)
@@ -217,7 +216,6 @@ void DMA_Normal_DataIn_Cb(CyU3PDmaChannel *handle,CyU3PDmaCbType_t evtype,CyU3PD
 
 void DMA_Normal_mode(void)
 {
-	CyU3PDebugPrint(4,"DMA_Normal_mode start=%d\r\n", glDMA_mode);
 	CyU3PDmaChannelConfig_t dmaCfg;
 	uint16_t size = 1024; // super speed <- assumed condition , temporary code
 
@@ -240,12 +238,11 @@ void DMA_Normal_mode(void)
 		&glDMADataIn,CY_U3P_DMA_TYPE_AUTO_SIGNAL);
 
 	glDMA_mode = DMA_NORMAL;
-	CyU3PDebugPrint(4,"DMA_Normal_mode end=%d\r\n", glDMA_mode);
+	CyU3PDebugPrint(4,"DMA_Normal_mode(%d) done\n", glDMA_mode);
 }
 
 void DMA_LoopBack_mode(void)
 {
-	CyU3PDebugPrint(4,"DMA_LoopBack_mode start=%d\r\n", glDMA_mode);
 	CyU3PDmaChannelConfig_t dmaCfg;
 	uint16_t size = 1024; // super speed <- assumed condition , temporary code
 
@@ -260,7 +257,7 @@ void DMA_LoopBack_mode(void)
 			&glDMADataOut,CY_U3P_DMA_TYPE_AUTO);
 
 	glDMA_mode = DMA_LP;
-	CyU3PDebugPrint(4,"DMA_LoopBack_mode end=%d\r\n", glDMA_mode);
+	CyU3PDebugPrint(4,"DMA_LoopBack_mode(%d) done\n", glDMA_mode);
 }
 
 void DMA_SinkSource_Cb(CyU3PDmaChannel *chHandle,CyU3PDmaCbType_t type,CyU3PDmaCBInput_t *input)
@@ -357,7 +354,6 @@ void DMASrcSinkFillInBuffers(void)
 
 void DMA_SinkSource_mode(void)
 {
-	CyU3PDebugPrint(4,"DMA_SinkSource_mode start=%d\r\n", glDMA_mode);
 	CyU3PDmaChannelConfig_t dmaCfg;
 	uint16_t size = 1024; // super speed <- assumed condition , temporary code
 
@@ -382,7 +378,7 @@ void DMA_SinkSource_mode(void)
 	DMASrcSinkFillInBuffers();
 
 	glDMA_mode = DMA_SINKSOURCE;
-	CyU3PDebugPrint(4,"DMA_SinkSource_mode end=%d\r\n", glDMA_mode);
+	CyU3PDebugPrint(4,"DMA_SinkSource_mode(%d) done\n", glDMA_mode);
 }
 
 void USBEP0RxThread(uint32_t Value)
@@ -822,9 +818,6 @@ void ApplicationThread(uint32_t Value)
 	}
 
 	DMA_Normal_mode();
-	CyU3PDebugPrint(4,"[init] DMA\r\n");
-
-	CyU3PDebugPrint(4,"[init] Completed\r\n");
 
 	uint32_t loop = 0;
 	while (1)
