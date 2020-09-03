@@ -26,7 +26,7 @@ void CheckStatus(char* StringPtr, CyU3PReturnStatus_t Status)
 {
 	if (DebugTxEnabled)				// Need to wait until ConsoleOut is enabled
 	{
-		if (Status == CY_U3P_SUCCESS) CyU3PDebugPrint(4, "\r\n%s Successful", StringPtr);
+		if (Status == CY_U3P_SUCCESS) CyU3PDebugPrint(4, "\r\n%s Successful\n", StringPtr);
 		else
 		{
 			// else hang here
