@@ -35,6 +35,8 @@ uint32_t glControlChData_idx;
 
 uint32_t glMngtData;
 
+extern void CheckStatus(char* StringPtr, CyU3PReturnStatus_t Status);
+
 void CyFxAppErrorHandler(CyU3PReturnStatus_t apiRetStatus)
 {
 	for (;;)
