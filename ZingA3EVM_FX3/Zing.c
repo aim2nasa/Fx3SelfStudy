@@ -172,11 +172,11 @@ CyU3PReturnStatus_t Zing_PLLConfig(void)
 
 	apiRetStatus = I2C_Read(devAddr,regAddr,rxbuffer,sizeof(rxbuffer));
 
-	#if DBG_LEVEL >= DBG_TYPE_I2C
+#if DBG_LEVEL >= DBG_TYPE_I2C
 	CyU3PDebugPrint(4, "[I2C/RD] ");
 	for(uint8_t i=0;i<sizeof(rxbuffer);i++) CyU3PDebugPrint(4, "0x%X, ",rxbuffer[i]);
 	CyU3PDebugPrint(4, "\r\n");
-	#endif
+#endif
 
 	return apiRetStatus;
 }
