@@ -392,11 +392,11 @@ void USBEP0RxThread(uint32_t Value)
 	char *str_tk;
 	uint32_t arg[10];
 
-	CyU3PDebugPrint (4, "\n[EP0] USBEP0RxThread start\n");
+	CyU3PDebugPrint (4, "[EP0] USBEP0RxThread start\n");
 	while(1) {
-		CyU3PDebugPrint (4, "\n [EP0] Event waiting...\n");
+		CyU3PDebugPrint (4, "[EP0] Event waiting...\n");
 		status = CyU3PEventGet (&glEp0Event, EVT_EP0, CYU3P_EVENT_OR_CLEAR, &evStat, CYU3P_WAIT_FOREVER);
-		CyU3PDebugPrint (4, "\n [EP0] EventGet return=%d\n",status);
+		CyU3PDebugPrint (4, "[EP0] EventGet return=%d\n",status);
 
 		if (status == CY_U3P_SUCCESS) {
 			if (evStat & EVT_EP0) {
@@ -448,9 +448,9 @@ void USBEP0RxThread(uint32_t Value)
 						}
 					}
 					else if(strcmp((const char *)glHostRxData, "ZING RST") == 0) {
-						CyU3PDebugPrint (4, "\n [EP0] Before Zing_Reset\n");
+						CyU3PDebugPrint (4, "[EP0] Before Zing_Reset\n");
 						Zing_Reset(0);
-						CyU3PDebugPrint (4, "\n [EP0] After Zing_Reset\n");
+						CyU3PDebugPrint (4, "[EP0] After Zing_Reset\n");
 					}
 					else if(strcmp((const char *)glHostRxData, "FX3 RST") == 0) {
 						CyU3PDeviceReset(CyFalse);
@@ -554,7 +554,7 @@ void USBEP0RxThread(uint32_t Value)
 			glHostRxData_idx = 0;
 		}
 	}
-	CyU3PDebugPrint (4, "\n[EP0] USBEP0RxThread end\n");
+	CyU3PDebugPrint (4, "[EP0] USBEP0RxThread end\n");
 }
 
 void ControlChThread(uint32_t Value)
