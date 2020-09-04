@@ -375,20 +375,16 @@ CyU3PReturnStatus_t USB_Connect(void)
 	if(CyU3PUsbGetSpeed() != CY_U3P_SUPER_SPEED)
 	{
 	  apiRetStatus = CyU3PConnectState(CyFalse, CyFalse);
-#if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
 	  CyU3PDebugPrint(4, "First attempt failed = %d\n", apiRetStatus);
-#endif
 
 		/* Check in other orientation */
 	  CyU3PGpioSetValue(GPIO57, CyTrue);
 	  apiRetStatus = CyU3PUsbControlUsb2Support (CyTrue);
 	  apiRetStatus = CyU3PConnectState(CyTrue, CyTrue);
 	  if (apiRetStatus != CY_U3P_SUCCESS)
-		{
-#if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-			CyU3PDebugPrint(4, "USB Connect failed, Error code = %d\n", apiRetStatus);
-#endif
-		}
+	  {
+		  CyU3PDebugPrint(4, "USB Connect failed, Error code = %d\n", apiRetStatus);
+	  }
 	}
 
 	return apiRetStatus;

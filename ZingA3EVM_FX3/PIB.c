@@ -37,18 +37,14 @@ CyU3PReturnStatus_t PIB_Init(void)
    apiRetStatus = CyU3PPibInit(CyTrue, &pibClock);
    if (apiRetStatus != CY_U3P_SUCCESS)
    {
-#if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-	   CyU3PDebugPrint (4, "P-port Initialization failed, Error Code = %d\r\n",apiRetStatus);
-#endif
+	   CyU3PDebugPrint (4, "P-port Initialization failed(0x%x)\n",apiRetStatus);
    }
 
    /* Load the GPIF configuration for Master mode. */
    apiRetStatus = CyU3PGpifLoad (&CyFxGpifConfig);
    if (apiRetStatus != CY_U3P_SUCCESS)
    {
-#if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-	   CyU3PDebugPrint (4, "CyU3PGpifLoad failed, Error Code = %d\r\n",apiRetStatus);
-#endif
+	   CyU3PDebugPrint (4, "CyU3PGpifLoad failed(0x%x)\n",apiRetStatus);
    }
 
    CyU3PGpifSocketConfigure (0,CY_U3P_PIB_SOCKET_0,4,CyFalse,1);
@@ -62,9 +58,7 @@ CyU3PReturnStatus_t PIB_Init(void)
    apiRetStatus = CyU3PGpifSMStart (START, ALPHA_START);
    if (apiRetStatus != CY_U3P_SUCCESS)
    {
-#if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-	   CyU3PDebugPrint (4, "CyU3PGpifSMStart failed, Error Code = %d\r\n",apiRetStatus);
-#endif
+	   CyU3PDebugPrint (4, "CyU3PGpifSMStart failed(0x%x)\n",apiRetStatus);
    }
 
    return apiRetStatus;

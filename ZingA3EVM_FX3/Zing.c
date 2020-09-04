@@ -591,9 +591,7 @@ CyU3PReturnStatus_t Zing_Transfer_Send2 (
     status = CyU3PDmaChannelGetBuffer (dma_ch, &Buf, ZING_HW_TIMEOUT);
     if (status != CY_U3P_SUCCESS)
     {
-#if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-        CyU3PDebugPrint (4, "Zing_Transfer_Send2,CyU3PDmaChannelGetBuffer failed, Error code = %d\n", status);
-#endif
+        CyU3PDebugPrint (4, "Zing_Transfer_Send2,CyU3PDmaChannelGetBuffer failed(0x%x)\n", status);
     }
     else {
 		CyU3PMemCopy (Buf.buffer, data, length);
@@ -602,10 +600,7 @@ CyU3PReturnStatus_t Zing_Transfer_Send2 (
 		status = CyU3PDmaChannelCommitBuffer (dma_ch, Buf.count, 0);
 		if (status != CY_U3P_SUCCESS)
 		{
-#if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-			CyU3PDebugPrint (4, "Zing_Transfer_Send2,CyU3PDmaChannelCommitBuffer failed, Error code = %d\n", status);
-#endif
-
+			CyU3PDebugPrint (4, "Zing_Transfer_Send2,CyU3PDmaChannelCommitBuffer failed(0x%x)\n", status);
 		}
     }
 
@@ -653,9 +648,7 @@ CyU3PReturnStatus_t Zing_Transfer_Recv2 (
 	status = CyU3PDmaChannelGetBuffer (dma_ch, &Buf, ZING_HW_TIMEOUT);
 	if (status != CY_U3P_SUCCESS)
 	{
-#if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-		CyU3PDebugPrint (4, "Zing_Transfer_Recv2,CyU3PDmaChannelGetBuffer failed, Error code = %d\n", status);
-#endif
+		CyU3PDebugPrint (4, "Zing_Transfer_Recv2,CyU3PDmaChannelGetBuffer failed(0x%x)\n", status);
 	}
 	else {
 		CyU3PMemCopy (data, Buf.buffer, Buf.count);
@@ -664,9 +657,7 @@ CyU3PReturnStatus_t Zing_Transfer_Recv2 (
 		status = CyU3PDmaChannelDiscardBuffer (dma_ch);
 		if (status != CY_U3P_SUCCESS)
 		{
-#if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-			CyU3PDebugPrint (4, "Zing_Transfer_Recv2,CyU3PDmaChannelCommitBuffer failed, Error code = %d\n", status);
-#endif
+			CyU3PDebugPrint (4, "Zing_Transfer_Recv2,CyU3PDmaChannelCommitBuffer failed(0x%x)\n", status);
 		}
 	}
 
@@ -947,9 +938,7 @@ CyU3PReturnStatus_t Zing_Transfer_Recv3 (
 	status = CyU3PDmaChannelGetBuffer (dma_ch, &Buf, CYU3P_WAIT_FOREVER);
 	if (status != CY_U3P_SUCCESS)
 	{
-#if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-		CyU3PDebugPrint (4, "Zing_Transfer_Recv3,CyU3PDmaChannelGetBuffer failed, Error code = %d\n", status);
-#endif
+		CyU3PDebugPrint (4, "Zing_Transfer_Recv3,CyU3PDmaChannelGetBuffer failed(0x%x)\n", status);
 	}
 	else {
 		CyU3PMemCopy (data, Buf.buffer, Buf.count);
@@ -958,9 +947,7 @@ CyU3PReturnStatus_t Zing_Transfer_Recv3 (
 		status = CyU3PDmaChannelDiscardBuffer (dma_ch);
 		if (status != CY_U3P_SUCCESS)
 		{
-#if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-			CyU3PDebugPrint (4, "Zing_Transfer_Recv3,CyU3PDmaChannelCommitBuffer failed, Error code = %d\n", status);
-#endif
+			CyU3PDebugPrint (4, "Zing_Transfer_Recv3,CyU3PDmaChannelCommitBuffer failed(0x%x)\n", status);
 		}
 	}
 

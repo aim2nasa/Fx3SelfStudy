@@ -265,9 +265,7 @@ void DMA_SinkSource_Cb(CyU3PDmaChannel *chHandle,CyU3PDmaCbType_t type,CyU3PDmaC
 		status = CyU3PDmaChannelDiscardBuffer(chHandle);
 		if (status != CY_U3P_SUCCESS)
 		{
-#if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-			CyU3PDebugPrint(4, "CyU3PDmaChannelDiscardBuffer failed, Error code = %d\n", status);
-#endif
+			CyU3PDebugPrint(4, "DMA_SinkSource_Cb,CyU3PDmaChannelDiscardBuffer failed(0x%x)\n", status);
 		}
 	}
 	if (type == CY_U3P_DMA_CB_CONS_EVENT)
@@ -278,16 +276,12 @@ void DMA_SinkSource_Cb(CyU3PDmaChannel *chHandle,CyU3PDmaCbType_t type,CyU3PDmaC
 			status = CyU3PDmaChannelCommitBuffer(chHandle, buf_p.size, 0);	//Commit the full buffer with default status
 			if (status != CY_U3P_SUCCESS)
 			{
-#if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-				CyU3PDebugPrint(4, "DMA_SinkSource_Cb,CyU3PDmaChannelCommitBuffer failed, Error code = %d\n", status);
-#endif
+				CyU3PDebugPrint(4, "DMA_SinkSource_Cb,CyU3PDmaChannelCommitBuffer failed(0x%x)\n", status);
 			}
 		}
 		else
 		{
-#if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-			CyU3PDebugPrint(4, "DMA_SinkSource_Cb,CyU3PDmaChannelGetBuffer failed, Error code = %d\n", status);
-#endif
+			CyU3PDebugPrint(4, "DMA_SinkSource_Cb,CyU3PDmaChannelGetBuffer failed(0x%x)\n", status);
 		}
 	}
 }
