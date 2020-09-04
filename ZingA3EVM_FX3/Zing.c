@@ -37,12 +37,6 @@ CyU3PReturnStatus_t Zing_Init(void)
 	Zing_RegWrite(0x8026,(uint8_t*)&reg_val,4);
 	Zing_RegWrite(0x802C,(uint8_t*)&reg_val,4);
 	Zing_RegWrite(0x802D,(uint8_t*)&reg_val,4);
-//	Zing_RegRead(0x8009,(uint8_t*)&rt_reg_val,4);
-//	Zing_RegRead(0x8024,(uint8_t*)&rt_reg_val,4);
-//	Zing_RegRead(0x8025,(uint8_t*)&rt_reg_val,4);
-//	Zing_RegRead(0x8026,(uint8_t*)&rt_reg_val,4);
-//	Zing_RegRead(0x802C,(uint8_t*)&rt_reg_val,4);
-//	Zing_RegRead(0x802D,(uint8_t*)&rt_reg_val,4);
 
 	reg_val = 0x0001DFFF;
 	Zing_RegWrite(0x8028,(uint8_t*)&reg_val,4);
@@ -121,14 +115,6 @@ CyU3PReturnStatus_t Zing_Init(void)
 	Zing_RegRead(REG_HW_CFG,(uint8_t*)&rt_reg_val,4);
 	CyU3PDebugPrint (4, "[Zing] HRCP : %s\r\n",rt_reg_val&0x00000010 ? "PPC" : "DEV");
 	CyU3PDebugPrint (4, "[Zing] Data mode : %s\r\n",rt_reg_val&0x01000000 ? "MSDU only mode" : "Header mode");
-
-	// test
-	{
-		uint8_t     *TempBuffer;
-		TempBuffer = (uint8_t *)CyU3PDmaBufferAlloc (512);
-		Zing_RegRead(0x8000,TempBuffer,128);
-		TempBuffer = 0;
-	}
 
 	return apiRetStatus;
 }
