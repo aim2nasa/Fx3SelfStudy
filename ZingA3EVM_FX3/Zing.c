@@ -172,7 +172,7 @@ CyU3PReturnStatus_t Zing_PLLConfig(void)
 
 #if DBG_LEVEL >= DBG_TYPE_I2C
 	CyU3PDebugPrint(4, "[I2C/RD] ");
-	for(uint8_t i=0;i<sizeof(rxbuffer);i++) CyU3PDebugPrint(4, "0x%X, ",rxbuffer[i]);
+	for(uint8_t i=0;i<sizeof(rxbuffer);i++) CyU3PDebugPrint(4, "0x%X ",rxbuffer[i]);
 	CyU3PDebugPrint(4, "\r\n");
 #endif
 
