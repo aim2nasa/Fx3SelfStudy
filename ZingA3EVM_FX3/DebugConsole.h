@@ -1,6 +1,7 @@
 #ifndef _DBGCONSOLE_
 #define _DBGCONSOLE_
 
+extern void CheckStatus(char* StringPtr, CyU3PReturnStatus_t Status);
 extern void UartCallback(CyU3PUartEvt_t Event, CyU3PUartError_t Error);
 
 extern void dma_uart_cb(
