@@ -31,7 +31,8 @@ CyU3PReturnStatus_t USBEP0RxThread_Create(void)
     void *StackPtr = NULL;
     CyU3PReturnStatus_t Status;
 
-    CyU3PEventCreate (&glEp0Event);
+    Status = CyU3PEventCreate(&glEp0Event);
+    if(Status!=CY_U3P_SUCCESS) return Status;
 
     StackPtr = CyU3PMemAlloc(APPLICATION_THREAD_STACK);
     Status = CyU3PThreadCreate(&EP0ThreadHandle,	// Handle to my Application Thread
