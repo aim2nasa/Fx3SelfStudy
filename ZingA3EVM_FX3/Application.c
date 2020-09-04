@@ -567,7 +567,8 @@ CyU3PReturnStatus_t ControlChThread_Create(void)
 	void *StackPtr = NULL;
 	CyU3PReturnStatus_t Status;
 
-	CyU3PEventCreate(&glControlChEvent);
+	Status = CyU3PEventCreate(&glControlChEvent);
+	if (Status != CY_U3P_SUCCESS) return Status;
 
 	StackPtr = CyU3PMemAlloc(APPLICATION_THREAD_STACK);
 	Status = CyU3PThreadCreate(&ControlChThreadHandle,	// Handle to my Application Thread
