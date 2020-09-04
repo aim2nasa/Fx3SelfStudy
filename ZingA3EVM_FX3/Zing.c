@@ -17,13 +17,10 @@ CyU3PReturnStatus_t Zing_Init(void)
 	uint32_t rt_reg_val;
 
 	// init pll through i2c
-#if DBG_LEVEL >= DBG_TYPE_ZING
-	CyU3PDebugPrint (4, "[init/Zing/PLL] start\r\n");
-#endif
+	CyU3PDebugPrint (4, "[Init/Zing/PLL]...\r\n");
 	apiRetStatus = Zing_PLLConfig();
-#if DBG_LEVEL >= DBG_TYPE_ZING
-	CyU3PDebugPrint (4, "[init/Zing/PLL] end\r\n");
-#endif
+	if(apiRetStatus!=CY_U3P_SUCCESS) return apiRetStatus;
+	CyU3PDebugPrint (4, "[Init/Zing/PLL] done\r\n");
 
 	// allocate buffer
 	Zing_AllocBuffer();
@@ -32,9 +29,7 @@ CyU3PReturnStatus_t Zing_Init(void)
 	Zing_SetGPIFBusWidth(ZING_GPIF_BUSWIDTH);
 
 	// init rf/serdes
-#if DBG_LEVEL >= DBG_TYPE_ZING
-	CyU3PDebugPrint (4, "[init/Zing/RF,Serdes] start\r\n");
-#endif
+	CyU3PDebugPrint (4, "[init/Zing/RF,Serdes]...\r\n");
 	reg_val = 0x00000000;
 	Zing_RegWrite(0x8009,(uint8_t*)&reg_val,4);
 	Zing_RegWrite(0x8024,(uint8_t*)&reg_val,4);
@@ -77,17 +72,11 @@ CyU3PReturnStatus_t Zing_Init(void)
 	reg_val = 0x788F73;
 	Zing_RegWrite(0x802E,(uint8_t*)&reg_val,4);
 
-
-
 	// AFC
-#if DBG_LEVEL >= DBG_TYPE_ZING
-	CyU3PDebugPrint (4, "[init/Zing/AFC] start\r\n");
-#endif
+	CyU3PDebugPrint (4, "[init/Zing/AFC]...\r\n");
     //Zing_AFC(); // AFC : Automatic Frequency Controller
 	Zing_AFC2(1.25*1000000000); // AFC : Automatic Frequency Controller
-#if DBG_LEVEL >= DBG_TYPE_ZING
-    CyU3PDebugPrint (4, "[init/Zing/AFC] end\r\n");
-#endif
+    CyU3PDebugPrint (4, "[init/Zing/AFC] done\r\n");
 
 #if ZING_RF_SERDES_PATH == 0
 	reg_val = 0x88C8A3BF; // serdes path
@@ -96,17 +85,10 @@ CyU3PReturnStatus_t Zing_Init(void)
 	reg_val = 0x88C8A3DF; // rf path
 	Zing_RegWrite(0x802C,(uint8_t*)&reg_val,4);
 #endif
-
-#if DBG_LEVEL >= DBG_TYPE_ZING
-	CyU3PDebugPrint (4, "[init/Zing/RF,Serdes] end\r\n");
-#endif
-
-
+	CyU3PDebugPrint (4, "[init/Zing/RF,Serdes] done\r\n");
 
     // init Modem
-#if DBG_LEVEL >= DBG_TYPE_ZING
-    CyU3PDebugPrint (4, "[init/Zing/Modem] start\r\n");
-#endif
+    CyU3PDebugPrint (4, "[init/Zing/Modem]...\r\n");
 	reg_val = REG_HW_CFG_INIT_STAGE0;
 	Zing_RegWrite(REG_HW_CFG,(uint8_t*)&reg_val,4);
 	reg_val = REG_IFS_PPC_INIT;
@@ -131,20 +113,14 @@ CyU3PReturnStatus_t Zing_Init(void)
 	Zing_RegWrite(REG_HW_CFG,(uint8_t*)&reg_val,4);
 	reg_val = REG_HW_CFG_INIT_STAGE2;
 	Zing_RegWrite(REG_HW_CFG,(uint8_t*)&reg_val,4);
-#if DBG_LEVEL >= DBG_TYPE_ZING
-    CyU3PDebugPrint (4, "[init/Zing/Modem] end\r\n");
-#endif
+    CyU3PDebugPrint (4, "[init/Zing/Modem] done\r\n");
 
 	Zing_RegRead(REG_RTL_VERSION,(uint8_t*)&rt_reg_val,4);
-#if DBG_LEVEL >= DBG_TYPE_ZING
 	CyU3PDebugPrint (4, "[Zing] RTL version : 0x%x\r\n",rt_reg_val);
-#endif
 
 	Zing_RegRead(REG_HW_CFG,(uint8_t*)&rt_reg_val,4);
-#if DBG_LEVEL >= DBG_TYPE_ZING
 	CyU3PDebugPrint (4, "[Zing] HRCP : %s\r\n",rt_reg_val&0x00000010 ? "PPC" : "DEV");
 	CyU3PDebugPrint (4, "[Zing] Data mode : %s\r\n",rt_reg_val&0x01000000 ? "MSDU only mode" : "Header mode");
-#endif
 
 	// test
 	{
