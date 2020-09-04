@@ -733,14 +733,17 @@ void ApplicationThread(uint32_t Value)
 	CheckStatus("[App] PIB_Init", Status);
 
 	DMA_Sync_mode();
+
 	Status = ControlChThread_Create();
 	CheckStatus("[App] ControlChThread_Create", Status);
 
 	Status = Zing_Init();
 	CheckStatus("[App] Zing_Init", Status);
 
-	//Zing_AutoHRCP();
-	//Zing_SetHRCP(PPC);
+#if 0
+	Zing_AutoHRCP();
+	Zing_SetHRCP(PPC);
+#endif
 	Zing_SetHRCP(DEV);
 
 	Status = USB_Connect();
