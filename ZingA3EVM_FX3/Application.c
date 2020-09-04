@@ -712,38 +712,38 @@ void ApplicationThread(uint32_t Value)
 	CyU3PReturnStatus_t Status;
 
 	Status = InitializeDebugConsole(6);
-	CheckStatus("InitializeDebugConsole", Status);
+	CheckStatus("[App] InitializeDebugConsole", Status);
 
-	CyU3PDebugPrint(4,"Git:%s\n",GIT_INFO);
+	CyU3PDebugPrint(4,"[App] Git:%s\n",GIT_INFO);
 
 	Status = USBEP0RxThread_Create();
-	CheckStatus("USBEP0RxThread_Create", Status);
+	CheckStatus("[App] USBEP0RxThread_Create", Status);
 
 	Status = SetupGPIO();
-	CheckStatus("SetupGPIO", Status);
+	CheckStatus("[App] SetupGPIO", Status);
 
 	Status = I2C_Init();
-	CheckStatus("I2C_Init", Status);
+	CheckStatus("[App] I2C_Init", Status);
 
 	Status = USB_Init();
-	CheckStatus("USB_Init", Status);
+	CheckStatus("[App] USB_Init", Status);
 
 	Status = PIB_Init();
-	CheckStatus("PIB_Init", Status);
+	CheckStatus("[App] PIB_Init", Status);
 
 	DMA_Sync_mode();
 	Status = ControlChThread_Create();
-	CheckStatus("ControlChThread_Create", Status);
+	CheckStatus("[App] ControlChThread_Create", Status);
 
 	Status = Zing_Init();
-	CheckStatus("Zing_Init", Status);
+	CheckStatus("[App] Zing_Init", Status);
 
 	//Zing_AutoHRCP();
 	//Zing_SetHRCP(PPC);
 	Zing_SetHRCP(DEV);
 
 	Status = USB_Connect();
-	CheckStatus("USB_Connect", Status);
+	CheckStatus("[App] USB_Connect", Status);
 
 	while(glIsApplnActive == 0) {
 		CyU3PThreadSleep(100);
@@ -754,7 +754,7 @@ void ApplicationThread(uint32_t Value)
 	uint32_t loop = 0;
 	while (1)
 	{
-		CyU3PDebugPrint(4,"[%d] ConIn:%d ConOut:%d DataIn:%d DataOut:%d\r",
+		CyU3PDebugPrint(4,"[App] Loop:%d ConIn:%d ConOut:%d DataIn:%d DataOut:%d\r",
 				loop++,glControlInInjected,glControlOutInjected,glDataInInjected,glDataOutInjected);
 
 		CyU3PThreadSleep(1000);
