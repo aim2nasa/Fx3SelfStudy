@@ -360,9 +360,6 @@ CyU3PReturnStatus_t USB_Init(void)
     {
     	CyFxAppErrorHandler("CyU3PUsbSetDesc(CY_U3P_USB_SET_STRING_DESCR)",apiRetStatus);
     }
-
-    //USB_Connect();
-
     return apiRetStatus;
 }
 
