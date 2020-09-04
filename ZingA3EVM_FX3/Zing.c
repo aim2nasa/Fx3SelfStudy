@@ -149,10 +149,8 @@ CyU3PReturnStatus_t Zing_Init(void)
 	// test
 	{
 		uint8_t     *TempBuffer;
-		REG_B0_t *TempReg_pt;
 		TempBuffer = (uint8_t *)CyU3PDmaBufferAlloc (512);
 		Zing_RegRead(0x8000,TempBuffer,128);
-		TempReg_pt = (REG_B0_t *)TempBuffer;
 		TempBuffer = 0;
 	}
 
