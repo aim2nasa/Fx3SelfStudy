@@ -316,7 +316,7 @@ CyU3PReturnStatus_t Zing_RegRead(uint16_t addr, uint8_t* buf, uint16_t len)
 // f_tg : Hz
 void Zing_AFC2(float f_tg)
 {
-	 uint32_t	reg_value, reg_val, rt_reg_val;
+	 uint32_t	reg_value, reg_val;
 	 uint32_t CntArr[AFC_N] = {0,};
 	 int i;
 	 float f_ref = 25000000;
