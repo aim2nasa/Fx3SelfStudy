@@ -118,7 +118,6 @@ io_cfg.lppMode   = CY_U3P_IO_MATRIX_LPP_DEFAULT;    /    io_cfg.lppMode   = CY_U
 //#define DBG_TYPE_ZING_DBG		(1)
 //#define DBG_TYPE_ZING_TR		(3)
 //#define DBG_TYPE_I2C			(2)
-#define DBG_TYPE_USB_EP0		(2)
 #define DBG_TYPE_UART			(2)
 #define DBG_TYPE_ZING			(1)
 #define DBG_TYPE_ZING_DBG		(3)

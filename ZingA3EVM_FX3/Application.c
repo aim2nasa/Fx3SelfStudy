@@ -371,16 +371,12 @@ void USBEP0RxThread(uint32_t Value)
 
 		if (status == CY_U3P_SUCCESS) {
 			if (evStat & EVT_EP0) {
-#if DBG_LEVEL >= DBG_TYPE_USB_EP0
-				CyU3PDebugPrint (4, "[Host Request/Num] %d \r\n",glHostReqNum);
-#endif
+				CyU3PDebugPrint (4, "[EP0] HostRequestNum=%d\n",glHostReqNum);
 				switch(glHostReqNum) {
 				case 3:
 					glHostRxData[glHostRxData_idx] = 0;
-#if DBG_LEVEL >= DBG_TYPE_USB_EP0
-					CyU3PDebugPrint (4, "[Host Request/Data] %s \r\n",glHostRxData);
-					CyU3PDebugPrint (4, "[Host CMD] %s \r\n", glHostRxData);
-#endif
+					CyU3PDebugPrint (4, "[EP0] HostRxData %s\n",glHostRxData);
+
 					if(strcmp((const char *)glHostRxData, "DMA MODE LP") == 0) {
 						DMA_LoopBack_mode();
 					}
@@ -447,9 +443,7 @@ void USBEP0RxThread(uint32_t Value)
 								}
 								else
 								{
-#if DBG_LEVEL >= DBG_TYPE_USB_EP0
-									CyU3PDebugPrint (4, "Invalid address=0x%x\r\n", arg[0]);
-#endif
+									CyU3PDebugPrint (4, "[EP0] Invalid address=0x%x\r\n", arg[0]);
 								}
 							}
 							else if(strcmp(str_tk, "REGR")==0) {	//cmd : ZING REGR 8001
@@ -462,9 +456,7 @@ void USBEP0RxThread(uint32_t Value)
 								}
 								else
 								{
-#if DBG_LEVEL >= DBG_TYPE_USB_EP0
-									CyU3PDebugPrint (4, "Invalid address=0x%x\r\n", arg[0]);
-#endif
+									CyU3PDebugPrint (4, "[EP0] Invalid address=0x%x\r\n", arg[0]);
 								}
 							}
 							else if(strcmp(str_tk, "DATATX")==0) {	//cmd : ZING DATATX 5 8192 A5
@@ -479,9 +471,7 @@ void USBEP0RxThread(uint32_t Value)
 									Zing_Test_DataTx2(arg[0],arg[1],arg[2]);
 								}
 								else {
-#if DBG_LEVEL >= DBG_TYPE_USB_EP0
-									CyU3PDebugPrint (4, "Invalid length=%d\r\n", arg[0]);
-#endif
+									CyU3PDebugPrint (4, "[EP0] Invalid length=%d\r\n", arg[0]);
 								}
 							}
 							else if(strcmp(str_tk, "DATASINK")==0) {	//cmd : ZING DATASINK 10 2
@@ -512,9 +502,7 @@ void USBEP0RxThread(uint32_t Value)
 					{
 						uint32_t tmp_cnt = 5;
 						char *tmp_data = "Hello User";
-#if DBG_LEVEL >= DBG_TYPE_USB_EP0
-						CyU3PDebugPrint (4, "[Host Response] %s \r\n",tmp_data);
-#endif
+						CyU3PDebugPrint (4, "[EP0] Host Response=%s\n",tmp_data);
 						CyU3PUsbSendEP0Data(tmp_cnt,(uint8_t *)tmp_data);
 					}
 					break;
