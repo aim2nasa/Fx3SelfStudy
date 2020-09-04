@@ -139,10 +139,6 @@ typedef enum DMA_MODE_T
 // ======================================================================================
 // extern func
 // ======================================================================================
-extern void
-CyFxAppErrorHandler (
-        CyU3PReturnStatus_t apiRetStatus    /* API return status */
-        );
 extern void DMA_Sync_mode(void);
 extern void
 DMA_Normal_CtrlOut_Cb (

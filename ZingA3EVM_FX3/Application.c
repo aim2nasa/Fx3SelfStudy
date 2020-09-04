@@ -35,15 +35,6 @@ uint32_t glControlChData_idx;
 
 uint32_t glMngtData;
 
-void CyFxAppErrorHandler(CyU3PReturnStatus_t apiRetStatus)
-{
-	for (;;)
-	{
-		CyU3PThreadSleep(100);	//Thread sleep : 100 ms
-		CyU3PDebugPrint(4,"[ErrorHandler] Help me\r\n");
-	}
-}
-
 void setDmaChannelCfg(CyU3PDmaChannelConfig_t *pDmaCfg, uint16_t size, uint16_t count, CyU3PDmaSocketId_t prodSckId,
 		CyU3PDmaSocketId_t consSckId, uint32_t notification, CyU3PDmaCallback_t cb)
 {
@@ -66,6 +57,8 @@ void createChannel(const char* name,
 		CyU3PDmaChannel *handle,CyU3PDmaType_t type)
 {
 	CyU3PReturnStatus_t apiRetStatus = CY_U3P_SUCCESS;
+	char msg[256]={0,};
+	memcpy(msg,name,strlen(name));
 
 	if(strcmp(name,"DmaNormal.DataIn")==0) {
 #if PACKET_SUSPEND == 1
@@ -77,8 +70,8 @@ void createChannel(const char* name,
 	apiRetStatus = CyU3PDmaChannelCreate(handle, type, pDmaCfg);
 	if (apiRetStatus != CY_U3P_SUCCESS)
 	{
-		CyU3PDebugPrint (4, "(%s) CyU3PDmaChannelCreate failed, Error code = 0x%x\n", name,apiRetStatus);
-		CyFxAppErrorHandler(apiRetStatus);
+		strcat(msg," CyU3PDmaChannelCreate");
+		CyFxAppErrorHandler(msg,apiRetStatus);
 	}
 
 	if(strcmp(name,"DmaNormal.DataIn")==0) {
@@ -90,8 +83,8 @@ void createChannel(const char* name,
 	apiRetStatus = CyU3PDmaChannelSetXfer(handle, 0);	//Set DMA Channel transfer size to INFINITE
 	if (apiRetStatus != CY_U3P_SUCCESS)
 	{
-		CyU3PDebugPrint (4, "(%s) CyU3PDmaChannelSetXfer failed, Error code = 0x%x\n", name,apiRetStatus);
-		CyFxAppErrorHandler(apiRetStatus);
+		strcat(msg," CyU3PDmaChannelSetXfer");
+		CyFxAppErrorHandler(msg,apiRetStatus);
 	}
 }
 
@@ -311,20 +304,14 @@ void DMASrcSinkFillInBuffers(void)
 		stat = CyU3PDmaChannelGetBuffer(&glDMAControlIn, &buf_p, CYU3P_NO_WAIT);
 		if (stat != CY_U3P_SUCCESS)
 		{
-#if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-			CyU3PDebugPrint(4, "DMASrcSinkFillInBuffers,CyU3PDmaChannelGetBuffer failed, Error code = %d\n", stat);
-#endif
-			CyFxAppErrorHandler(stat);
+			CyFxAppErrorHandler("DMASrcSinkFillInBuffers,CyU3PDmaChannelGetBuffer",stat);
 		}
 
 		CyU3PMemSet(buf_p.buffer, 0xA5, buf_p.size);
 		stat = CyU3PDmaChannelCommitBuffer(&glDMAControlIn, buf_p.size, 0);
 		if (stat != CY_U3P_SUCCESS)
 		{
-#if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-			CyU3PDebugPrint(4, "DMASrcSinkFillInBuffers,CyU3PDmaChannelCommitBuffer failed, Error code = %d\n", stat);
-#endif
-			CyFxAppErrorHandler(stat);
+			CyFxAppErrorHandler("DMASrcSinkFillInBuffers,CyU3PDmaChannelCommitBuffer",stat);
 		}
 	}
 
@@ -334,20 +321,14 @@ void DMASrcSinkFillInBuffers(void)
 		stat = CyU3PDmaChannelGetBuffer(&glDMADataIn, &buf_p, CYU3P_NO_WAIT);
 		if (stat != CY_U3P_SUCCESS)
 		{
-#if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-			CyU3PDebugPrint(4, "DMASrcSinkFillInBuffers,CyU3PDmaChannelGetBuffer failed, Error code = %d\n", stat);
-#endif
-			CyFxAppErrorHandler(stat);
+			CyFxAppErrorHandler("DMASrcSinkFillInBuffers,CyU3PDmaChannelGetBuffer",stat);
 		}
 
 		CyU3PMemSet(buf_p.buffer, 0xA5, buf_p.size);
 		stat = CyU3PDmaChannelCommitBuffer(&glDMADataIn, buf_p.size, 0);
 		if (stat != CY_U3P_SUCCESS)
 		{
-#if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-			CyU3PDebugPrint(4, "DMASrcSinkFillInBuffers,CyU3PDmaChannelCommitBuffer failed, Error code = %d\n", stat);
-#endif
-			CyFxAppErrorHandler(stat);
+			CyFxAppErrorHandler("DMASrcSinkFillInBuffers,CyU3PDmaChannelCommitBuffer",stat);
 		}
 	}
 }
@@ -652,10 +633,7 @@ void AppStart(void)
 		size = 1024;
 		break;
 	default:
-#if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-		CyU3PDebugPrint(4, "Error! Invalid USB speed.\n");
-#endif
-		CyFxAppErrorHandler(CY_U3P_ERROR_FAILURE);
+		CyFxAppErrorHandler("Invalid USB speed",CY_U3P_ERROR_FAILURE);
 		break;
 	}
 
@@ -669,19 +647,13 @@ void AppStart(void)
 	apiRetStatus = CyU3PSetEpConfig(CY_FX_EP_PRODUCER, &epCfg);
 	if (apiRetStatus != CY_U3P_SUCCESS)
 	{
-#if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-		CyU3PDebugPrint(4, "CyU3PSetEpConfig failed, Error code = %d\n", apiRetStatus);
-#endif
-		CyFxAppErrorHandler (apiRetStatus);
+		CyFxAppErrorHandler("CyU3PSetEpConfig(CY_FX_EP_PRODUCER)",apiRetStatus);
 	}
 
 	apiRetStatus = CyU3PSetEpConfig(CY_FX_EP_CONSUMER, &epCfg);
 	if (apiRetStatus != CY_U3P_SUCCESS)
 	{
-#if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-		CyU3PDebugPrint(4, "CyU3PSetEpConfig failed, Error code = %d\n", apiRetStatus);
-#endif
-		CyFxAppErrorHandler (apiRetStatus);
+		CyFxAppErrorHandler("CyU3PSetEpConfig(CY_FX_EP_CONSUMER)",apiRetStatus);
     }
 
 	CyU3PMemSet ((uint8_t *)&epCfg, 0, sizeof (epCfg));
@@ -694,19 +666,13 @@ void AppStart(void)
 	apiRetStatus = CyU3PSetEpConfig(CY_FX_EP_PRODUCER_2, &epCfg);
 	if (apiRetStatus != CY_U3P_SUCCESS)
 	{
-#if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-		CyU3PDebugPrint (4, "CyU3PSetEpConfig failed, Error code = %d\n", apiRetStatus);
-#endif
-		CyFxAppErrorHandler (apiRetStatus);
+		CyFxAppErrorHandler("CyU3PSetEpConfig(CY_FX_EP_PRODUCER_2)",apiRetStatus);
 	}
 
 	apiRetStatus = CyU3PSetEpConfig(CY_FX_EP_CONSUMER_2, &epCfg);
 	if (apiRetStatus != CY_U3P_SUCCESS)
 	{
-#if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-		CyU3PDebugPrint (4, "CyU3PSetEpConfig failed, Error code = %d\n", apiRetStatus);
-#endif
-		CyFxAppErrorHandler (apiRetStatus);
+		CyFxAppErrorHandler("CyU3PSetEpConfig(CY_FX_EP_CONSUMER_2)",apiRetStatus);
 	}
 
 	/* Update the status flag. */
@@ -738,40 +704,28 @@ void AppStop(void)
 	apiRetStatus = CyU3PSetEpConfig(CY_FX_EP_PRODUCER, &epCfg);
 	if (apiRetStatus != CY_U3P_SUCCESS)
 	{
-#if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-		CyU3PDebugPrint (4, "CyU3PSetEpConfig failed, Error code = %d\n", apiRetStatus);
-#endif
-		CyFxAppErrorHandler (apiRetStatus);
+		CyFxAppErrorHandler("CyU3PSetEpConfig(CY_FX_EP_PRODUCER)",apiRetStatus);
 	}
 
     /* Control IN: Consumer endpoint configuration. */
 	apiRetStatus = CyU3PSetEpConfig(CY_FX_EP_CONSUMER, &epCfg);
 	if (apiRetStatus != CY_U3P_SUCCESS)
 	{
-#if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-		CyU3PDebugPrint (4, "CyU3PSetEpConfig failed, Error code = %d\n", apiRetStatus);
-#endif
-		CyFxAppErrorHandler (apiRetStatus);
+		CyFxAppErrorHandler("CyU3PSetEpConfig(CY_FX_EP_CONSUMER)",apiRetStatus);
     }
 
 	/* Data OUT: Producer endpoint configuration */
 	apiRetStatus = CyU3PSetEpConfig(CY_FX_EP_PRODUCER_2, &epCfg);
 	if (apiRetStatus != CY_U3P_SUCCESS)
     {
-#if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-		CyU3PDebugPrint (4, "CyU3PSetEpConfig failed, Error code = %d\n", apiRetStatus);
-#endif
-		CyFxAppErrorHandler (apiRetStatus);
+		CyFxAppErrorHandler("CyU3PSetEpConfig(CY_FX_EP_PRODUCER_2)",apiRetStatus);
     }
 
 	/* Data IN: Consumer endpoint configuration */
 	apiRetStatus = CyU3PSetEpConfig(CY_FX_EP_CONSUMER_2, &epCfg);
 	if (apiRetStatus != CY_U3P_SUCCESS)
 	{
-#if DBG_LEVEL >= DBG_TYPE_BASIC_ERR
-		CyU3PDebugPrint (4, "CyU3PSetEpConfig failed, Error code = %d\n", apiRetStatus);
-#endif
-		CyFxAppErrorHandler (apiRetStatus);
+		CyFxAppErrorHandler("CyU3PSetEpConfig(CY_FX_EP_CONSUMER_2)",apiRetStatus);
 	}
 }
 

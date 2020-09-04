@@ -40,6 +40,15 @@ void CheckStatus(char* StringPtr, CyU3PReturnStatus_t Status)
 	}
 }
 
+void CyFxAppErrorHandler(char* StringPtr,CyU3PReturnStatus_t Status)
+{
+	for (;;)
+	{
+		if(DebugTxEnabled) CyU3PDebugPrint(4,"Error in %s(0x%x)\n",StringPtr,Status);
+		CyU3PThreadSleep(100);
+	}
+}
+
 void UartCallback(CyU3PUartEvt_t Event, CyU3PUartError_t Error)
 // Handle characters typed in by the developer
 // Later we will respond to commands terminated with a <CR>
