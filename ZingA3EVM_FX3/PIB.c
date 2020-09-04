@@ -63,8 +63,3 @@ CyU3PReturnStatus_t PIB_Init(void)
 
    return apiRetStatus;
 }
-
-
-
-
-
