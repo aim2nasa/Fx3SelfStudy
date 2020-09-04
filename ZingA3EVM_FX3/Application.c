@@ -518,46 +518,46 @@ void USBEP0RxThread(uint32_t Value)
 
 void ControlChThread(uint32_t Value)
 {
-	CyU3PReturnStatus_t status = CY_U3P_SUCCESS;
-	REG_Resp_t* resp_pt;
-	uint32_t rt_len, i;
+	REG_Resp_t *resp_pt;
+	uint32_t rt_len,recv,intEvt,regRead,manFrame;
+	uint8_t *buf = (uint8_t *)CyU3PDmaBufferAlloc (512);
 
-	uint8_t * buf = (uint8_t *)CyU3PDmaBufferAlloc (512);
-
-	uint32_t loop = 0;
+	recv = intEvt = regRead = manFrame = 0;
 	while(1) {
 		if(glDMA_mode == DMA_SYNC) {
-			status = Zing_Transfer_Recv3(&glDMAControlIn,buf,&rt_len); //wait forever...
-
-			if(status == CY_U3P_SUCCESS) {
+			if(Zing_Transfer_Recv3(&glDMAControlIn,buf,&rt_len) == CY_U3P_SUCCESS) {
+				recv++;
 				resp_pt = (REG_Resp_t*)buf;
 				if(resp_pt->hdr.dir == 1 && resp_pt->hdr.interrupt == 1) { //Zing Interrupt Event
 					// no act
+					intEvt++;
 					CyU3PDebugPrint (4, "[Zing/ControlCh] discarded interrupt event pk\r\n");
 					CyU3PDebugPrint (4, "[Zing/ControlCh] pk header :(MSB-LSB) 0x%x\r\n",*((uint64_t*)resp_pt));
 				}
 				else if(resp_pt->hdr.target == 1) { //Reg
+					regRead++;
 					memcpy(glControlChData,buf,rt_len);
 					glControlChData_idx = rt_len;
 					CyU3PEventSet (&glControlChEvent, EVT_CTLCH0, CYU3P_EVENT_OR);
 				}
 				else if(resp_pt->hdr.dir == 1 && resp_pt->hdr.fr_type == 1) { //Management Frame
+					manFrame++;
 					CyU3PDebugPrint (4, "[Zing/ControlCh] rx management frame\r\n");
 					CyU3PDebugPrint (4, "[Zing/ControlCh] frame header :(MSB-LSB) 0x%x\r\n",*((uint64_t*)resp_pt));
 					CyU3PDebugPrint (4, "[Zing/ControlCh] frame data : ");
-					for(i=0;i<rt_len-ZING_HDR_SIZE;i++) CyU3PDebugPrint (4, "0x%X, ",buf[i+ZING_HDR_SIZE]);
+					for(uint32_t i=0;i<rt_len-ZING_HDR_SIZE;i++) CyU3PDebugPrint (4, "0x%X, ",buf[i+ZING_HDR_SIZE]);
 					CyU3PDebugPrint (4, "\r\n");
 
 					if(rt_len-ZING_HDR_SIZE == 4) { //EP0 : ZING MNGT_TX4B 12345678 --> ZING MNGT_RX4B
 						glMngtData = *(uint32_t*)(buf+ZING_HDR_SIZE);
 					}
 				}
+				CyU3PDebugPrint(4,"[Zing/ControlCh] Recv:%d Interrupt:%d RegRead:%d ManFrame:%d\n",recv,intEvt,regRead,manFrame);
 			}
 		}
 		else {
 			CyU3PThreadSleep(10);
 		}
-		CyU3PDebugPrint(4,"[Zing/ControlCh] count:%d\n",loop++);
 	}
 	CyU3PDmaBufferFree(buf);
 }
