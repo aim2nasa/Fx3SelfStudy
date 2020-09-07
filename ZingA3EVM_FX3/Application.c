@@ -3,6 +3,7 @@
 #include "DebugConsole.h"
 #include "USB_Handler.h"
 #include "PIB.h"
+#include "LPP.h"
 
 //App thread, flag
 CyU3PThread ApplicationThreadHandle;	//Handle to my Application Thread

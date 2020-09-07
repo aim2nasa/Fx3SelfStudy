@@ -2,6 +2,7 @@
 #include "Zing_internal.h"
 #include "Support.h"
 #include "PIB.h"
+#include "LPP.h"
 #include <math.h>
 
 // DMA override mode buffers

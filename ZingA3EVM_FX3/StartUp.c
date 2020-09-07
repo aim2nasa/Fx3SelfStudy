@@ -6,6 +6,7 @@
  */
 
 #include "Application.h"
+#include "LPP.h"
 
 extern void ApplicationThread(uint32_t Value);
 extern CyU3PThread ApplicationThreadHandle;
