@@ -82,18 +82,12 @@ typedef enum DMA_MODE_T
 // ======================================================================================
 // extern func
 // ======================================================================================
-extern void USBEP0RxThread(uint32_t Value);
-extern void
-AppStart (
-        void);
-extern void
-AppStop (
-        void);
-extern void ApplicationThread(uint32_t Value);
-
-extern void ControlChThread(uint32_t Value);
-extern CyU3PReturnStatus_t ControlChThread_Create(void);
-
+void USBEP0RxThread(uint32_t Value);
+void AppStart(void);
+void AppStop(void);
+void ApplicationThread(uint32_t Value);
+void ControlChThread(uint32_t Value);
+CyU3PReturnStatus_t ControlChThread_Create(void);
 
 // ======================================================================================
 // extern val
