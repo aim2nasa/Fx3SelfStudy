@@ -74,7 +74,7 @@ CyU3PReturnStatus_t Zing_RegWrite(uint16_t addr, uint8_t* buf, uint16_t len)
 
 	Zing_Header(glZingControlOutBuffer,len,addr,ZING_HDR_ACTION_WRITE);
 	memcpy(glZingControlOutBuffer+ZING_HDR_SIZE, buf, len);
-	apiRetStatus = Zing_Transfer_Send2(&ControlOut_,glZingControlOutBuffer,len+ZING_HDR_SIZE);
+	apiRetStatus = Zing_Transfer_Send2(&Dma.ControlOut_,glZingControlOutBuffer,len+ZING_HDR_SIZE);
 #if DBG_LEVEL >= DBG_TYPE_ZING_TR
 	{
 		int i;
@@ -155,7 +155,7 @@ CyU3PReturnStatus_t Zing_RegRead(uint16_t addr, uint8_t* buf, uint16_t len)
     }
 
     Zing_Header(glZingControlOutBuffer,len,addr,ZING_HDR_ACTION_READ);
-    status = Zing_Transfer_Send2(&ControlOut_,glZingControlOutBuffer,ZING_HDR_SIZE);
+    status = Zing_Transfer_Send2(&Dma.ControlOut_,glZingControlOutBuffer,ZING_HDR_SIZE);
 
     status = CyU3PEventGet (&glControlChEvent, EVT_CTLCH0, CYU3P_EVENT_OR_CLEAR, &evStat, CYU3P_WAIT_FOREVER);
 	// copy data only (except zing header(8Byte))
@@ -411,7 +411,7 @@ CyU3PReturnStatus_t Zing_DataWrite(uint8_t* buf, uint32_t len)
 	CyU3PReturnStatus_t apiRetStatus = CY_U3P_SUCCESS;
 
 	memcpy(glZingDataOutBuffer, buf, len);
-	apiRetStatus = Zing_Transfer_Send2(&DataOut_,glZingDataOutBuffer,len);
+	apiRetStatus = Zing_Transfer_Send2(&Dma.DataOut_,glZingDataOutBuffer,len);
 #if DBG_LEVEL >= DBG_TYPE_ZING_TR
 	if(apiRetStatus==CY_U3P_SUCCESS) {
 		{
@@ -432,7 +432,7 @@ CyU3PReturnStatus_t Zing_DataWrite2(uint8_t* buf, uint32_t len)
 {
 	CyU3PReturnStatus_t apiRetStatus = CY_U3P_SUCCESS;
 
-	apiRetStatus = Zing_Transfer_Send2(&DataOut_,buf,len);
+	apiRetStatus = Zing_Transfer_Send2(&Dma.DataOut_,buf,len);
 
 	return apiRetStatus;
 }
@@ -471,7 +471,7 @@ CyU3PReturnStatus_t Zing_DataRead(uint8_t* buf, uint32_t* len_pt)
 {
 	CyU3PReturnStatus_t apiRetStatus = CY_U3P_SUCCESS;
 
-	apiRetStatus = Zing_Transfer_Recv2(&DataIn_,glZingDataInBuffer,len_pt);
+	apiRetStatus = Zing_Transfer_Recv2(&Dma.DataIn_,glZingDataInBuffer,len_pt);
 
 	if(apiRetStatus==CY_U3P_SUCCESS)
 		memcpy(buf,glZingDataInBuffer,*len_pt);
@@ -694,7 +694,7 @@ void Zing_Test_DataTx2 (uint32_t repeat, uint32_t length, uint32_t pattern)
 	uint32_t idx32=0;
 
     CyU3PDmaBuffer_t Buf;
-    CyU3PDmaChannel* dma_ch = &DataOut_;
+    CyU3PDmaChannel* dma_ch = &Dma.DataOut_;
 
     const uint32_t buf_cnt = 4;
     uint32_t cnt1, cnt2;
@@ -732,7 +732,7 @@ void Zing_Test_DataTx2 (uint32_t repeat, uint32_t length, uint32_t pattern)
 void Zing_Test_DataSink2 (uint32_t cnt, uint32_t timeout)
 {
 	CyU3PReturnStatus_t status = CY_U3P_SUCCESS;
-	CyU3PDmaChannel* dma_ch = &DataIn_;
+	CyU3PDmaChannel* dma_ch = &Dma.DataIn_;
 	CyU3PDmaBuffer_t Buf;
 
 	uint32_t idx32;
@@ -823,7 +823,7 @@ CyU3PReturnStatus_t Zing_Management_Send (
 
 	Zing_Header2(glZingControlOutBuffer,0,0,0,1,0,1,0,0,length);
 	memcpy(glZingControlOutBuffer+ZING_HDR_SIZE, data, length);
-	status = Zing_Transfer_Send2(&ControlOut_,glZingControlOutBuffer,length+ZING_HDR_SIZE);
+	status = Zing_Transfer_Send2(&Dma.ControlOut_,glZingControlOutBuffer,length+ZING_HDR_SIZE);
 
 	return status;
 }

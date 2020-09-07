@@ -112,10 +112,10 @@ USBSetupCB (
                     CyU3PUsbSetEpNak (CY_FX_EP_PRODUCER, CyTrue);
                     CyU3PBusyWait (125);
 
-                    CyU3PDmaChannelReset (&ControlOut_);
+                    CyU3PDmaChannelReset (&Dma.ControlOut_);
                     CyU3PUsbFlushEp(CY_FX_EP_PRODUCER);
                     CyU3PUsbResetEp (CY_FX_EP_PRODUCER);
-                    CyU3PDmaChannelSetXfer (&ControlOut_, 0);
+                    CyU3PDmaChannelSetXfer (&Dma.ControlOut_, 0);
 
                     CyU3PUsbSetEpNak (CY_FX_EP_PRODUCER, CyFalse);
                 }
@@ -124,10 +124,10 @@ USBSetupCB (
                     CyU3PUsbSetEpNak (CY_FX_EP_CONSUMER, CyTrue);
                     CyU3PBusyWait (125);
 
-                    CyU3PDmaChannelReset (&ControlIn_);
+                    CyU3PDmaChannelReset (&Dma.ControlIn_);
                     CyU3PUsbFlushEp(CY_FX_EP_CONSUMER);
                     CyU3PUsbResetEp (CY_FX_EP_CONSUMER);
-                    CyU3PDmaChannelSetXfer (&ControlIn_, 0);
+                    CyU3PDmaChannelSetXfer (&Dma.ControlIn_, 0);
 
                     CyU3PUsbSetEpNak (CY_FX_EP_CONSUMER, CyFalse);
                 }
@@ -136,10 +136,10 @@ USBSetupCB (
                     CyU3PUsbSetEpNak (CY_FX_EP_PRODUCER_2, CyTrue);
                     CyU3PBusyWait (125);
 
-                    CyU3PDmaChannelReset (&DataOut_);
+                    CyU3PDmaChannelReset (&Dma.DataOut_);
                     CyU3PUsbFlushEp(CY_FX_EP_PRODUCER_2);
                     CyU3PUsbResetEp (CY_FX_EP_PRODUCER_2);
-                    CyU3PDmaChannelSetXfer (&DataOut_, 0);
+                    CyU3PDmaChannelSetXfer (&Dma.DataOut_, 0);
 
                     CyU3PUsbSetEpNak (CY_FX_EP_PRODUCER_2, CyFalse);
                 }
@@ -148,10 +148,10 @@ USBSetupCB (
                     CyU3PUsbSetEpNak (CY_FX_EP_CONSUMER_2, CyTrue);
                     CyU3PBusyWait (125);
 
-                    CyU3PDmaChannelReset (&DataIn_);
+                    CyU3PDmaChannelReset (&Dma.DataIn_);
                     CyU3PUsbFlushEp(CY_FX_EP_CONSUMER_2);
                     CyU3PUsbResetEp (CY_FX_EP_CONSUMER_2);
-                    CyU3PDmaChannelSetXfer (&DataIn_, 0);
+                    CyU3PDmaChannelSetXfer (&Dma.DataIn_, 0);
 
                     CyU3PUsbSetEpNak (CY_FX_EP_CONSUMER_2, CyFalse);
                 }

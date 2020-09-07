@@ -12,16 +12,22 @@ typedef enum DMA_MODE_T
 	DMA_SINKSOURCE,
 } dma_mode_t;
 
-dma_mode_t Mode_;
-CyU3PDmaChannel ControlOut_;
-CyU3PDmaChannel ControlIn_;
-CyU3PDmaChannel DataOut_;
-CyU3PDmaChannel DataIn_;
-uint32_t DataOutCount_;
-uint32_t DataInCount_;
-uint32_t ControlOutCount_;
-uint32_t ControlInCount_;
+typedef struct DMA_T
+{
+	dma_mode_t Mode_;
+	CyU3PDmaChannel ControlOut_;
+	CyU3PDmaChannel ControlIn_;
+	CyU3PDmaChannel DataOut_;
+	CyU3PDmaChannel DataIn_;
+	uint32_t DataOutCount_;
+	uint32_t DataInCount_;
+	uint32_t ControlOutCount_;
+	uint32_t ControlInCount_;
+} DMA_T;
 
+DMA_T Dma;
+
+void initDmaCount();
 void setDmaChannelCfg(CyU3PDmaChannelConfig_t *pDmaCfg, uint16_t size, uint16_t count, CyU3PDmaSocketId_t prodSckId,
 		CyU3PDmaSocketId_t consSckId, uint32_t notification, CyU3PDmaCallback_t cb);
 void createChannel(const char* name,
