@@ -1,4 +1,8 @@
-#include "Application.h"
+#include "LPP.h"
+#include "cyu3lpp.h"
+#include "cyu3gpio.h"
+#include "cyu3error.h"
+#include "cyu3i2c.h"
 
 CyU3PReturnStatus_t SetupGPIO(void)
 {
