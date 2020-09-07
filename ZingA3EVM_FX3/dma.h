@@ -13,14 +13,14 @@ typedef enum DMA_MODE_T
 } dma_mode_t;
 
 dma_mode_t dmaMode;
-CyU3PDmaChannel glDMAControlOut;
-CyU3PDmaChannel glDMAControlIn;
-CyU3PDmaChannel glDMADataOut;
-CyU3PDmaChannel glDMADataIn;
-uint32_t glDataOutInjected;
-uint32_t glDataInInjected;
-uint32_t glControlOutInjected;
-uint32_t glControlInInjected;
+CyU3PDmaChannel dmaControlOut;
+CyU3PDmaChannel dmaControlIn;
+CyU3PDmaChannel dmaDataOut;
+CyU3PDmaChannel dmaDataIn;
+uint32_t dataOutInjected;
+uint32_t dataInInjected;
+uint32_t controlOutInjected;
+uint32_t controlInInjected;
 
 void setDmaChannelCfg(CyU3PDmaChannelConfig_t *pDmaCfg, uint16_t size, uint16_t count, CyU3PDmaSocketId_t prodSckId,
 		CyU3PDmaSocketId_t consSckId, uint32_t notification, CyU3PDmaCallback_t cb);

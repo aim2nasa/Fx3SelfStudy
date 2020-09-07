@@ -112,10 +112,10 @@ USBSetupCB (
                     CyU3PUsbSetEpNak (CY_FX_EP_PRODUCER, CyTrue);
                     CyU3PBusyWait (125);
 
-                    CyU3PDmaChannelReset (&glDMAControlOut);
+                    CyU3PDmaChannelReset (&dmaControlOut);
                     CyU3PUsbFlushEp(CY_FX_EP_PRODUCER);
                     CyU3PUsbResetEp (CY_FX_EP_PRODUCER);
-                    CyU3PDmaChannelSetXfer (&glDMAControlOut, 0);
+                    CyU3PDmaChannelSetXfer (&dmaControlOut, 0);
 
                     CyU3PUsbSetEpNak (CY_FX_EP_PRODUCER, CyFalse);
                 }
@@ -124,10 +124,10 @@ USBSetupCB (
                     CyU3PUsbSetEpNak (CY_FX_EP_CONSUMER, CyTrue);
                     CyU3PBusyWait (125);
 
-                    CyU3PDmaChannelReset (&glDMAControlIn);
+                    CyU3PDmaChannelReset (&dmaControlIn);
                     CyU3PUsbFlushEp(CY_FX_EP_CONSUMER);
                     CyU3PUsbResetEp (CY_FX_EP_CONSUMER);
-                    CyU3PDmaChannelSetXfer (&glDMAControlIn, 0);
+                    CyU3PDmaChannelSetXfer (&dmaControlIn, 0);
 
                     CyU3PUsbSetEpNak (CY_FX_EP_CONSUMER, CyFalse);
                 }
@@ -136,10 +136,10 @@ USBSetupCB (
                     CyU3PUsbSetEpNak (CY_FX_EP_PRODUCER_2, CyTrue);
                     CyU3PBusyWait (125);
 
-                    CyU3PDmaChannelReset (&glDMADataOut);
+                    CyU3PDmaChannelReset (&dmaDataOut);
                     CyU3PUsbFlushEp(CY_FX_EP_PRODUCER_2);
                     CyU3PUsbResetEp (CY_FX_EP_PRODUCER_2);
-                    CyU3PDmaChannelSetXfer (&glDMADataOut, 0);
+                    CyU3PDmaChannelSetXfer (&dmaDataOut, 0);
 
                     CyU3PUsbSetEpNak (CY_FX_EP_PRODUCER_2, CyFalse);
                 }
@@ -148,10 +148,10 @@ USBSetupCB (
                     CyU3PUsbSetEpNak (CY_FX_EP_CONSUMER_2, CyTrue);
                     CyU3PBusyWait (125);
 
-                    CyU3PDmaChannelReset (&glDMADataIn);
+                    CyU3PDmaChannelReset (&dmaDataIn);
                     CyU3PUsbFlushEp(CY_FX_EP_CONSUMER_2);
                     CyU3PUsbResetEp (CY_FX_EP_CONSUMER_2);
-                    CyU3PDmaChannelSetXfer (&glDMADataIn, 0);
+                    CyU3PDmaChannelSetXfer (&dmaDataIn, 0);
 
                     CyU3PUsbSetEpNak (CY_FX_EP_CONSUMER_2, CyFalse);
                 }
