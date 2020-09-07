@@ -1,5 +1,6 @@
 #include "Application.h"
 #include "gitcommit.h"
+#include "DebugConsole.h"
 
 //App thread, flag
 CyU3PThread ApplicationThreadHandle;	//Handle to my Application Thread

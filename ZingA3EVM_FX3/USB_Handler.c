@@ -1,7 +1,5 @@
-
 #include "Application.h"
-
-
+#include "DebugConsole.h"
 
 /* Extern definitions for the USB Descriptors */
 extern const uint8_t CyFxUSB20DeviceDscr[];
