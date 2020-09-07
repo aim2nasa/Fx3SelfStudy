@@ -1,15 +1,5 @@
-/*
- * DebugConsole.c
- *
- * I2C_DebugConsole.c
- *
- *  This module implements the DebugPrint portion of cyu3debug.c for an I2C-based console
- *	The LOG function is not implemented which makes this code simpler
- */
-
 #include "Application.h"
 
-//
 static CyU3PQueue       Uart_DebugQueue;
 static CyU3PDmaBuffer_t Uart_Queue[10];
 static CyU3PThread      Uart_DebugThread;
