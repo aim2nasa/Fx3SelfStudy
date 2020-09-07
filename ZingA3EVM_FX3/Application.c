@@ -5,6 +5,8 @@
 #include "PIB.h"
 #include "LPP.h"
 #include "ZingHw.h"
+#include "cyu3error.h"
+#include "Zing.h"
 
 //App thread, flag
 CyU3PThread ApplicationThreadHandle;	//Handle to my Application Thread

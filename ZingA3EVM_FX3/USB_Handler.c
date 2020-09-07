@@ -1,6 +1,11 @@
 #include "Application.h"
 #include "DebugConsole.h"
 #include "LPP.h"
+#include "cyu3error.h"
+#include "cyu3usbconst.h"
+#include "cyu3usb.h"
+#include "cyu3utils.h"
+#include "cyu3gpio.h"
 
 /* Extern definitions for the USB Descriptors */
 extern const uint8_t CyFxUSB20DeviceDscr[];

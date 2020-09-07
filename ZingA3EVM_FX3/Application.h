@@ -1,24 +1,8 @@
-
-/* This file contains the externals used by the Keyboard application. */
-
-#ifndef _APPLICATION_H_
-#define _APPLICATION_H_
+#ifndef __APPLICATION_H__
+#define __APPLICATION_H__
 
 #include "cyu3types.h"
-#include "cyu3system.h"
-#include "cyu3os.h"
-#include "cyu3gpio.h"
 #include "cyu3dma.h"
-#include "cyu3error.h"
-#include "cyu3uart.h"
-#include "cyu3i2c.h"
-#include "cyu3externcstart.h"
-#include "cyu3utils.h"
-#include "cyu3usbconst.h"
-#include "cyu3usb.h"
-#include "cyu3pib.h"
-
-#include "Zing.h"
 
 // ======================================================================================
 // ZING
@@ -98,33 +82,7 @@ typedef enum DMA_MODE_T
 // ======================================================================================
 // extern func
 // ======================================================================================
-extern void DMA_Sync_mode(void);
-extern void
-DMA_Normal_CtrlOut_Cb (
-        CyU3PDmaChannel     *handle,
-        CyU3PDmaCbType_t     evtype,
-        CyU3PDmaCBInput_t   *input);
-extern void
-DMA_Normal_CtrlIn_Cb (
-        CyU3PDmaChannel     *handle,
-        CyU3PDmaCbType_t     evtype,
-        CyU3PDmaCBInput_t   *input);
-extern void
-DMA_Normal_DataOut_Cb (
-        CyU3PDmaChannel     *handle,
-        CyU3PDmaCbType_t     evtype,
-        CyU3PDmaCBInput_t   *input);
-extern void
-DMA_Normal_DataIn_Cb (
-        CyU3PDmaChannel     *handle,
-        CyU3PDmaCbType_t     evtype,
-        CyU3PDmaCBInput_t   *input);
-extern void DMA_Normal_mode(void);
-extern void DMA_LoopBack_mode(void);
-extern void DMA_SinkSource_Cb(
-        CyU3PDmaChannel   *chHandle, /* Handle to the DMA channel. */
-        CyU3PDmaCbType_t  type,      /* Callback type.             */
-        CyU3PDmaCBInput_t *input);    /* Callback status.           */
+
 extern void
 DMASrcSinkFillInBuffers (
         void);

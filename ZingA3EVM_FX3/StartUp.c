@@ -7,6 +7,9 @@
 
 #include "Application.h"
 #include "LPP.h"
+#include "cyu3error.h"
+#include "cyfx3_api.h"
+#include "cyu3system.h"
 
 extern void ApplicationThread(uint32_t Value);
 extern CyU3PThread ApplicationThreadHandle;
