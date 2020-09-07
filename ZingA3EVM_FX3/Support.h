@@ -1,13 +1,8 @@
-/*
- * Support.h
- *
- *  Created on: 2020. 1. 31.
- *      Author: JM
- */
+#ifndef __SUPPORT_H__
+#define __SUPPORT_H__
 
-#ifndef SUPORT_H_
-#define SUPORT_H_
+#include "cyu3types.h"
 
-extern uint32_t RandomGen_GetNumber(void);
+uint32_t RandomGen_GetNumber(void);
 
-#endif /* SUPORT_H_ */
+#endif

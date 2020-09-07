@@ -1,11 +1,5 @@
-/*
- * Support.c - this module contains useful routines
- *
- *  Created on: Feb 18, 2014
- *      Author: John
- */
-
-#include "Application.h"
+#include "Support.h"
+#include "cyu3gpio.h"
 
 // 0~1000
 uint32_t RandomGen_GetNumber(void)
@@ -37,4 +31,3 @@ uint32_t RandomGen_GetNumber(void)
 	//CyU3PDebugPrint (4, "RandNum = %d\r\n",rand_arr[2]);
 	return rand_arr[3];
 }
-
