@@ -3,6 +3,7 @@
 #include "Support.h"
 #include "PIB.h"
 #include "LPP.h"
+#include "ZingHw.h"
 #include <math.h>
 
 // DMA override mode buffers
