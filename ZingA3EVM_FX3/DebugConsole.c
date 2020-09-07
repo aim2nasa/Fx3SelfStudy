@@ -4,8 +4,6 @@
 static CyBool_t DebugTxEnabled = CyFalse;	// Set true once I can output messages to the Console
 
 void CheckStatus(char* StringPtr, CyU3PReturnStatus_t Status)
-// In this initial debugging stage I stall on an un-successful system call, else I display progress
-// Note that this assumes that there were no errors bringing up the Debug Console
 {
 	if (DebugTxEnabled)				// Need to wait until ConsoleOut is enabled
 	{
@@ -33,8 +31,6 @@ void CyFxAppErrorHandler(char* StringPtr,CyU3PReturnStatus_t Status)
 }
 
 void UartCallback(CyU3PUartEvt_t Event, CyU3PUartError_t Error)
-// Handle characters typed in by the developer
-// Later we will respond to commands terminated with a <CR>
 {
 	if (Event == CY_U3P_UART_EVENT_RX_DONE)
     {
@@ -46,7 +42,7 @@ CyU3PReturnStatus_t InitializeDebugConsole(uint8_t TraceLevel)
 	CyU3PUartConfig_t uartConfig;
 	CyU3PReturnStatus_t Status = CY_U3P_SUCCESS;
 
-	Status = CyU3PUartInit();		// Start the UART driver
+	Status = CyU3PUartInit();											// Start the UART driver
 	CheckStatus("CyU3PUartInit", Status);
 
 	CyU3PMemSet ((uint8_t *)&uartConfig, 0, sizeof (uartConfig));
