@@ -8,6 +8,14 @@
 #include "cyu3error.h"
 #include "Zing.h"
 
+typedef enum DMA_MODE_T
+{
+	DMA_NORMAL = 0,
+	DMA_SYNC,
+	DMA_LP,
+	DMA_SINKSOURCE,
+} dma_mode_t;
+
 //App thread, flag
 CyU3PThread ApplicationThreadHandle;	//Handle to my Application Thread
 CyBool_t glIsApplnActive = CyFalse;		//Whether the application is active or not

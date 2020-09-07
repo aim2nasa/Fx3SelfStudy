@@ -31,14 +31,6 @@
 #define DBG_TYPE_ZING_TR			(3)
 #define DBG_TYPE_I2C				(2)
 
-typedef enum DMA_MODE_T
-{
-    DMA_NORMAL = 0,
-    DMA_SYNC,
-    DMA_LP,
-    DMA_SINKSOURCE,
-} dma_mode_t;
-
 //Extern func
 void USBEP0RxThread(uint32_t Value);
 void AppStart(void);
