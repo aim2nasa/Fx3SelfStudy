@@ -7,6 +7,7 @@
 #include "cyu3error.h"
 #include "cyu3system.h"
 #include "cyu3gpio.h"
+#include "dma.h"
 #include <math.h>
 
 // DMA override mode buffers

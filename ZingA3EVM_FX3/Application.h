@@ -42,12 +42,6 @@ CyU3PReturnStatus_t ControlChThread_Create(void);
 //Extern variables
 extern CyBool_t glIsApplnActive;
 
-// extern dma
-extern CyU3PDmaChannel glDMAControlOut;
-extern CyU3PDmaChannel glDMAControlIn;
-extern CyU3PDmaChannel glDMADataOut;
-extern CyU3PDmaChannel glDMADataIn;
-
 // extern ep0
 extern CyU3PEvent glEp0Event;		//Event group used to signal the thread
 extern uint32_t glHostReqNum;
