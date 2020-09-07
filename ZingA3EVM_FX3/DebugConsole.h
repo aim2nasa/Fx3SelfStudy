@@ -1,17 +1,11 @@
-#ifndef _DBGCONSOLE_
-#define _DBGCONSOLE_
+#ifndef __DEBUG_CONSOLE_H__
+#define __DEBUG_CONSOLE_H__
 
-extern void CheckStatus(char* StringPtr, CyU3PReturnStatus_t Status);
-extern void CyFxAppErrorHandler(char* StringPtr,CyU3PReturnStatus_t Status);
-extern void UartCallback(CyU3PUartEvt_t Event, CyU3PUartError_t Error);
-
-extern void dma_uart_cb(
-        CyU3PDmaChannel *handle,        /**< Handle to the DMA channel. */
-        CyU3PDmaCbType_t type,          /**< The type of callback notification being generated. */
-        CyU3PDmaCBInput_t *input        /**< Union that contains data related to the notification.*/
-);
-
-extern void Uart_ConsoleThread(uint32_t Value);
-extern CyU3PReturnStatus_t InitializeDebugConsole(uint8_t TraceLevel);
+void CheckStatus(char* StringPtr, CyU3PReturnStatus_t Status);
+void CyFxAppErrorHandler(char* StringPtr,CyU3PReturnStatus_t Status);
+void UartCallback(CyU3PUartEvt_t Event, CyU3PUartError_t Error);
+void dma_uart_cb(CyU3PDmaChannel *handle,CyU3PDmaCbType_t type,CyU3PDmaCBInput_t *input);
+void Uart_ConsoleThread(uint32_t Value);
+CyU3PReturnStatus_t InitializeDebugConsole(uint8_t TraceLevel);
 
 #endif   /* _INCLUDED__ */
