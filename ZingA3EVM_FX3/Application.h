@@ -82,11 +82,6 @@ typedef enum DMA_MODE_T
 // ======================================================================================
 // extern func
 // ======================================================================================
-
-extern void
-DMASrcSinkFillInBuffers (
-        void);
-extern void DMA_SinkSource_mode(void);
 extern void USBEP0RxThread(uint32_t Value);
 extern void
 AppStart (
