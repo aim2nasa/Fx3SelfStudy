@@ -1,7 +1,5 @@
-
-
-#ifndef _ZINGHW_
-#define _ZINGHW_
+#ifndef __ZING_HW_H__
+#define __ZING_HW_H__
 
 // I2C -------------------------------------------------------------------------------------------------------------------
 #define I2C_DeviceAddress				(0x08)
@@ -267,6 +265,4 @@ typedef struct REG_Resp_Block
 } REG_Resp_t;
 
 
-#endif   /* _INCLUDED__ */
-
-
+#endif
