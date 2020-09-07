@@ -5,9 +5,9 @@ static CyU3PQueue       Uart_DebugQueue;
 static CyU3PDmaBuffer_t Uart_Queue[10];
 static CyU3PThread      Uart_DebugThread;
 
-CyU3PDmaChannel glUARTtoCPU_Handle;		// Handle needed by Uart Callback routine
-uint8_t glConsoleInBuffer[200];				// Buffer for user Console Input
-uint32_t glConsoleInIndex=0;				// Index into ConsoleIn buffer
+CyU3PDmaChannel UARTtoCPU_Handle;		// Handle needed by Uart Callback routine
+uint8_t ConsoleInBuffer[200];				// Buffer for user Console Input
+uint32_t ConsoleInIndex=0;				// Index into ConsoleIn buffer
 
 static CyBool_t DebugTxEnabled = CyFalse;	// Set true once I can output messages to the Console
 
@@ -65,8 +65,8 @@ void dma_uart_cb(
 
         case CY_U3P_DMA_CB_PROD_EVENT:
 
-        	CyU3PDmaChannelGetBuffer(&glUARTtoCPU_Handle, &ConsoleInDmaBuffer, CYU3P_NO_WAIT);
-        	CyU3PDmaChannelDiscardBuffer(&glUARTtoCPU_Handle);
+        	CyU3PDmaChannelGetBuffer(&UARTtoCPU_Handle, &ConsoleInDmaBuffer, CYU3P_NO_WAIT);
+        	CyU3PDmaChannelDiscardBuffer(&UARTtoCPU_Handle);
 
         	if(ConsoleInDmaBuffer.count > 0) {
         		memcpy(buf,ConsoleInDmaBuffer.buffer,ConsoleInDmaBuffer.count);
@@ -112,7 +112,7 @@ void Uart_ConsoleThread(uint32_t Value)
     	Status = CyU3PQueueReceive(&Uart_DebugQueue, &FilledBuffer, 100);
         //CyU3PDebugPrint(4, "[heart beat]\r\n");
 
-        CyU3PDmaChannelSetWrapUp(&glUARTtoCPU_Handle);
+        CyU3PDmaChannelSetWrapUp(&UARTtoCPU_Handle);
         CyU3PThreadSleep (100);
 
         if (Status == CY_U3P_SUCCESS)
@@ -127,16 +127,16 @@ void Uart_ConsoleThread(uint32_t Value)
 			// buffering
 			CharCount = buf_idx;
 			pInputChar = buf;
-			if (glConsoleInIndex+CharCount>=sizeof(glConsoleInBuffer)) {
-				glConsoleInIndex = 0;
+			if (ConsoleInIndex+CharCount>=sizeof(ConsoleInBuffer)) {
+				ConsoleInIndex = 0;
 			}
-			memcpy(glConsoleInBuffer+glConsoleInIndex,pInputChar,CharCount);
-			glConsoleInIndex += CharCount;
-			glConsoleInBuffer[glConsoleInIndex] = 0;
+			memcpy(ConsoleInBuffer+ConsoleInIndex,pInputChar,CharCount);
+			ConsoleInIndex += CharCount;
+			ConsoleInBuffer[ConsoleInIndex] = 0;
 
 			// search CR LF
-			for(i=0;i<glConsoleInIndex-1;i++) {
-				if(glConsoleInBuffer[i] == 0x0d && glConsoleInBuffer[i+1] == 0x0a) {
+			for(i=0;i<ConsoleInIndex-1;i++) {
+				if(ConsoleInBuffer[i] == 0x0d && ConsoleInBuffer[i+1] == 0x0a) {
 					result_CR_LF = 1;
 					result_CR_LF_idx = i;
 				}
@@ -145,22 +145,22 @@ void Uart_ConsoleThread(uint32_t Value)
 			// packet parsing & processing
 			if (result_CR_LF == 1)
 			{
-				glConsoleInBuffer[result_CR_LF_idx] = 0;
-				glConsoleInBuffer[result_CR_LF_idx+1] = 0;
+				ConsoleInBuffer[result_CR_LF_idx] = 0;
+				ConsoleInBuffer[result_CR_LF_idx+1] = 0;
 
-				if (strcmp("test1", (const char*)glConsoleInBuffer) == 0) {
+				if (strcmp("test1", (const char*)ConsoleInBuffer) == 0) {
 					CyU3PDebugPrint(4, "test1\r\n");
 				}
-				else if (strcmp("reset", (const char*)glConsoleInBuffer) == 0)
+				else if (strcmp("reset", (const char*)ConsoleInBuffer) == 0)
 				{
 					CyU3PDebugPrint(4, "reset\r\n");
 					CyU3PThreadSleep(100);
 					CyU3PDeviceReset(CyFalse);
 				}
-				else CyU3PDebugPrint(4, "Unknown Command: '%s'\r\n", &glConsoleInBuffer[0]);
+				else CyU3PDebugPrint(4, "Unknown Command: '%s'\r\n", &ConsoleInBuffer[0]);
 
-				memset(glConsoleInBuffer,0,glConsoleInIndex);
-				glConsoleInIndex = 0;
+				memset(ConsoleInBuffer,0,ConsoleInIndex);
+				ConsoleInIndex = 0;
 			}
 
         }
@@ -217,16 +217,16 @@ CyU3PReturnStatus_t InitializeDebugConsole(uint8_t TraceLevel)
 	dmaConfig.consHeader = 0;
 	dmaConfig.prodAvailCount = 0;
 
-	Status = CyU3PDmaChannelCreate(&glUARTtoCPU_Handle, CY_U3P_DMA_TYPE_MANUAL_IN, &dmaConfig);
+	Status = CyU3PDmaChannelCreate(&UARTtoCPU_Handle, CY_U3P_DMA_TYPE_MANUAL_IN, &dmaConfig);
 	CheckStatus("CyU3PDmaChannelCreate", Status);
 
-	Status = CyU3PDmaChannelSetXfer(&glUARTtoCPU_Handle, 0);
+	Status = CyU3PDmaChannelSetXfer(&UARTtoCPU_Handle, 0);
 	CheckStatus("CyU3PDmaChannelSetXfer", Status);
 
 	CyU3PThreadSleep (1000);
-	CyU3PDmaChannelDiscardBuffer(&glUARTtoCPU_Handle);
+	CyU3PDmaChannelDiscardBuffer(&UARTtoCPU_Handle);
 	CyU3PThreadSleep (100);
-	CyU3PDmaChannelReset(&glUARTtoCPU_Handle);
+	CyU3PDmaChannelReset(&UARTtoCPU_Handle);
 
 	// Create a Queue for the Debug_Console to use
 	ret = CyU3PQueueCreate(&Uart_DebugQueue, sizeof (CyU3PDmaBuffer_t), Uart_Queue, sizeof(Uart_Queue));
