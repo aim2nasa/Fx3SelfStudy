@@ -1,7 +1,11 @@
-#ifndef _PIB_
-#define _PIB_
+#ifndef __PIB_H__
+#define __PIB_H__
 
-extern CyU3PReturnStatus_t PIB_Init(void);
+#include "cyu3types.h"
 
+#define ZING_GPIF_BUSWIDTH	(32)	// 8 / 16 / 32
+#define ZING_BUG_WM3		(1)		// 0 : zlp, 1 : no zlp
 
-#endif   /* _INCLUDED__ */
+CyU3PReturnStatus_t PIB_Init(void);
+
+#endif

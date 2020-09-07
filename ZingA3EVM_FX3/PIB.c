@@ -1,4 +1,7 @@
-#include "Application.h"
+#include "PIB.h"
+#include "cyu3pib.h"
+#include "cyu3error.h"
+#include "cyu3gpif.h"
 
 #if ZING_BUG_WM3 == 0
 

@@ -26,10 +26,8 @@
 // ======================================================================================
 // ZING
 // ======================================================================================
-#define ZING_GPIF_BUSWIDTH (32) // 8 / 16 / 32
 #define ZING_RF_SERDES_PATH (1) // 0 : serdes path, 1: rf path
 
-#define ZING_BUG_WM3 (1) // 0 : zlp, 1 : no zlp
 #define PACKET_SUSPEND (0) // packet suspend / resume, 0 : disable, 1 : enable (decrease the speed)
 
 /*
