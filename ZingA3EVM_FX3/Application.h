@@ -22,7 +22,6 @@
 #include "ZingHw.h"
 #include "LPP.h"
 #include "PIB.h"
-#include "USB_Handler.h"
 
 // ======================================================================================
 // ZING
