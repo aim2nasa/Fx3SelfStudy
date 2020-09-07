@@ -1,4 +1,5 @@
-#include "Application.h"
+#include "DebugConsole.h"
+#include "cyu3error.h"
 
 static CyU3PQueue       Uart_DebugQueue;
 static CyU3PDmaBuffer_t Uart_Queue[10];

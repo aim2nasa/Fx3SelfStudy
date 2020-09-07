@@ -55,10 +55,6 @@ io_cfg.lppMode   = CY_U3P_IO_MATRIX_LPP_DEFAULT;    /    io_cfg.lppMode   = CY_U
 #define APPLICATION_THREAD_STACK	(0x1000)
 #define APPLICATION_THREAD_PRIORITY	(8)
 
-// Thread - Uart
-#define DEBUG_THREAD_STACK_SIZE	    (0x800)
-#define DEBUG_THREAD_PRIORITY    	(8)
-
 //
 #define EVT_EP0                 (1 << 1)
 
