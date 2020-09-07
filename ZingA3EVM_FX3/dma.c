@@ -4,7 +4,7 @@
 #include "DebugConsole.h"
 #include "Application.h"
 
-dma_mode_t glDMA_mode=0;
+dma_mode_t dmaMode=0;
 uint32_t glDataOutInjected = 0;
 uint32_t glDataInInjected = 0;
 uint32_t glControlOutInjected = 0;
@@ -106,8 +106,8 @@ void DMA_Sync_mode(void)
 		&dmaCfg,size*CY_FX_DATA_BURST_LENGTH,4,CY_U3P_PIB_SOCKET_3,CY_U3P_CPU_SOCKET_CONS,CY_U3P_DMA_CB_PROD_EVENT,0,
 		&glDMADataIn,CY_U3P_DMA_TYPE_MANUAL_IN);
 
-	glDMA_mode = DMA_SYNC;
-	CyU3PDebugPrint(4,"DMA_Sync_mode(%d) done\n", glDMA_mode);
+	dmaMode = DMA_SYNC;
+	CyU3PDebugPrint(4,"DMA_Sync_mode(%d) done\n", dmaMode);
 }
 
 void DMA_Normal_CtrlOut_Cb(CyU3PDmaChannel *handle,CyU3PDmaCbType_t evtype,CyU3PDmaCBInput_t *input)
@@ -205,8 +205,8 @@ void DMA_Normal_mode(void)
 		&dmaCfg,size*CY_FX_DATA_BURST_LENGTH,4,CY_U3P_PIB_SOCKET_3,CY_U3P_UIB_SOCKET_CONS_2,CY_U3P_DMA_CB_PROD_EVENT,DMA_Normal_DataIn_Cb,
 		&glDMADataIn,CY_U3P_DMA_TYPE_AUTO_SIGNAL);
 
-	glDMA_mode = DMA_NORMAL;
-	CyU3PDebugPrint(4,"DMA_Normal_mode(%d) done\n", glDMA_mode);
+	dmaMode = DMA_NORMAL;
+	CyU3PDebugPrint(4,"DMA_Normal_mode(%d) done\n", dmaMode);
 }
 
 void DMA_LoopBack_mode(void)
@@ -224,8 +224,8 @@ void DMA_LoopBack_mode(void)
 			&dmaCfg,size*CY_FX_DATA_BURST_LENGTH,4,CY_U3P_UIB_SOCKET_PROD_2,CY_U3P_UIB_SOCKET_CONS_2,0,0,
 			&glDMADataOut,CY_U3P_DMA_TYPE_AUTO);
 
-	glDMA_mode = DMA_LP;
-	CyU3PDebugPrint(4,"DMA_LoopBack_mode(%d) done\n", glDMA_mode);
+	dmaMode = DMA_LP;
+	CyU3PDebugPrint(4,"DMA_LoopBack_mode(%d) done\n", dmaMode);
 }
 
 void DMA_SinkSource_Cb(CyU3PDmaChannel *chHandle,CyU3PDmaCbType_t type,CyU3PDmaCBInput_t *input)
@@ -327,6 +327,6 @@ void DMA_SinkSource_mode(void)
 
 	DMASrcSinkFillInBuffers();
 
-	glDMA_mode = DMA_SINKSOURCE;
-	CyU3PDebugPrint(4,"DMA_SinkSource_mode(%d) done\n", glDMA_mode);
+	dmaMode = DMA_SINKSOURCE;
+	CyU3PDebugPrint(4,"DMA_SinkSource_mode(%d) done\n", dmaMode);
 }

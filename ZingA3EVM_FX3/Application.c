@@ -197,7 +197,7 @@ void ControlChThread(uint32_t Value)
 
 	recv = intEvt = regRead = manFrame = 0;
 	while(1) {
-		if(glDMA_mode == DMA_SYNC) {
+		if(dmaMode == DMA_SYNC) {
 			if(Zing_Transfer_Recv3(&glDMAControlIn,buf,&rt_len) == CY_U3P_SUCCESS) {
 				recv++;
 				resp_pt = (REG_Resp_t*)buf;

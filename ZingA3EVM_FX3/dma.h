@@ -12,7 +12,7 @@ typedef enum DMA_MODE_T
 	DMA_SINKSOURCE,
 } dma_mode_t;
 
-dma_mode_t glDMA_mode;
+dma_mode_t dmaMode;
 CyU3PDmaChannel glDMAControlOut;
 CyU3PDmaChannel glDMAControlIn;
 CyU3PDmaChannel glDMADataOut;
