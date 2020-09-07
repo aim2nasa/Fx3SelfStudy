@@ -197,8 +197,8 @@ void ControlChThread(uint32_t Value)
 
 	recv = intEvt = regRead = manFrame = 0;
 	while(1) {
-		if(dmaMode == DMA_SYNC) {
-			if(Zing_Transfer_Recv3(&dmaControlIn,buf,&rt_len) == CY_U3P_SUCCESS) {
+		if(Mode_ == DMA_SYNC) {
+			if(Zing_Transfer_Recv3(&ControlIn_,buf,&rt_len) == CY_U3P_SUCCESS) {
 				recv++;
 				resp_pt = (REG_Resp_t*)buf;
 				if(resp_pt->hdr.dir == 1 && resp_pt->hdr.interrupt == 1) { //Zing Interrupt Event
@@ -432,7 +432,7 @@ void ApplicationThread(uint32_t Value)
 	while (1)
 	{
 		CyU3PDebugPrint(4,"[App] Loop:%d ConIn:%d ConOut:%d DataIn:%d DataOut:%d\r",
-				loop++,controlInInjected,controlOutInjected,dataInInjected,dataOutInjected);
+				loop++,ControlInCount_,ControlOutCount_,DataInCount_,DataOutCount_);
 
 		CyU3PThreadSleep(1000);
 	}

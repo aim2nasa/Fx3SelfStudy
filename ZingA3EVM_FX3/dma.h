@@ -12,15 +12,15 @@ typedef enum DMA_MODE_T
 	DMA_SINKSOURCE,
 } dma_mode_t;
 
-dma_mode_t dmaMode;
-CyU3PDmaChannel dmaControlOut;
-CyU3PDmaChannel dmaControlIn;
-CyU3PDmaChannel dmaDataOut;
-CyU3PDmaChannel dmaDataIn;
-uint32_t dataOutInjected;
-uint32_t dataInInjected;
-uint32_t controlOutInjected;
-uint32_t controlInInjected;
+dma_mode_t Mode_;
+CyU3PDmaChannel ControlOut_;
+CyU3PDmaChannel ControlIn_;
+CyU3PDmaChannel DataOut_;
+CyU3PDmaChannel DataIn_;
+uint32_t DataOutCount_;
+uint32_t DataInCount_;
+uint32_t ControlOutCount_;
+uint32_t ControlInCount_;
 
 void setDmaChannelCfg(CyU3PDmaChannelConfig_t *pDmaCfg, uint16_t size, uint16_t count, CyU3PDmaSocketId_t prodSckId,
 		CyU3PDmaSocketId_t consSckId, uint32_t notification, CyU3PDmaCallback_t cb);
