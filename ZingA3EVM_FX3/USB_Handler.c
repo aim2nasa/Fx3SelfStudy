@@ -1,7 +1,7 @@
 #include "Application.h"
 #include "DebugConsole.h"
 #include "USB_Handler.h"
-#include "LPP.h"
+#include "gpio.h"
 #include "cyu3error.h"
 #include "cyu3utils.h"
 #include "cyu3gpio.h"
