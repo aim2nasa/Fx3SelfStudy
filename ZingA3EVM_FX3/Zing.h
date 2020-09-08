@@ -1,6 +1,9 @@
 #ifndef __ZING_H__
 #define __ZING_H__
 
+#include "cyu3types.h"
+#include "cyu3dma.h"
+
 #define ZING_RF_SERDES_PATH		(1)		//0 : serdes path, 1: rf path
 
 CyU3PReturnStatus_t Zing_Init(void);
