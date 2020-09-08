@@ -5,7 +5,6 @@
 #include "LPP.h"
 #include "ZingHw.h"
 #include "cyu3error.h"
-#include "cyu3system.h"
 #include "cyu3gpio.h"
 #include "dma.h"
 #include "ControlCh.h"

@@ -3,8 +3,6 @@
 #include "USB_Handler.h"
 #include "LPP.h"
 #include "cyu3error.h"
-#include "cyu3usbconst.h"
-#include "cyu3usb.h"
 #include "cyu3utils.h"
 #include "cyu3gpio.h"
 #include "dma.h"
