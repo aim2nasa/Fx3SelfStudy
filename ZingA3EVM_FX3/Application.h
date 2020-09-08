@@ -2,8 +2,6 @@
 #define __APPLICATION_H__
 
 #include "cyu3types.h"
-#include "cyu3dma.h"
-#include "AppThread.h"
 #include "cyu3externcstart.h"
 
 #define PACKET_SUSPEND				(0) // packet suspend / resume, 0 : disable, 1 : enable (decrease the speed)
