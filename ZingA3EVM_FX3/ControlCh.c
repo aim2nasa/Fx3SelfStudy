@@ -6,6 +6,8 @@
 #include "cyu3system.h"
 #include "AppThread.h"
 
+CyU3PThread ControlChThreadHandle;
+
 void ControlChThread(uint32_t Value)
 {
 	REG_Resp_t *resp_pt;

@@ -10,7 +10,6 @@ CyU3PEvent ControlChEvent;
 uint8_t ControlChData[512];
 uint32_t ControlChData_idx;
 uint32_t MngtData;
-CyU3PThread ControlChThreadHandle;
 
 void ControlChThread(uint32_t Value);
 CyU3PReturnStatus_t ControlChThread_Create(void);
