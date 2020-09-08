@@ -20,7 +20,6 @@
 #define DBG_TYPE_ZING_DBG			(3)
 #define DBG_TYPE_ZING_TR			(3)
 
-//Extern func
 void AppStart(void);
 void AppStop(void);
 void ApplicationThread(uint32_t Value);
