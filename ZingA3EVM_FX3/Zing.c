@@ -8,6 +8,7 @@
 #include "cyu3system.h"
 #include "cyu3gpio.h"
 #include "dma.h"
+#include "ControlCh.h"
 #include <math.h>
 
 // DMA override mode buffers
@@ -157,9 +158,9 @@ CyU3PReturnStatus_t Zing_RegRead(uint16_t addr, uint8_t* buf, uint16_t len)
     Zing_Header(glZingControlOutBuffer,len,addr,ZING_HDR_ACTION_READ);
     status = Zing_Transfer_Send2(&Dma.ControlOut_,glZingControlOutBuffer,ZING_HDR_SIZE);
 
-    status = CyU3PEventGet (&glControlChEvent, EVT_CTLCH0, CYU3P_EVENT_OR_CLEAR, &evStat, CYU3P_WAIT_FOREVER);
+    status = CyU3PEventGet (&ControlChEvent, EVT_CTLCH0, CYU3P_EVENT_OR_CLEAR, &evStat, CYU3P_WAIT_FOREVER);
 	// copy data only (except zing header(8Byte))
-	memcpy(buf,glControlChData+8,glControlChData_idx-8);
+	memcpy(buf,ControlChData+8,ControlChData_idx-8);
 
 #if DBG_LEVEL >= DBG_TYPE_ZING_TR
 	{

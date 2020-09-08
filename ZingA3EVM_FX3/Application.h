@@ -3,6 +3,7 @@
 
 #include "cyu3types.h"
 #include "cyu3dma.h"
+#include "AppThread.h"
 #include "cyu3externcstart.h"
 
 //Zing
@@ -10,13 +11,8 @@
 
 #define PACKET_SUSPEND				(0) // packet suspend / resume, 0 : disable, 1 : enable (decrease the speed)
 
-//Threads - App
-#define APPLICATION_THREAD_STACK	(0x1000)
-#define APPLICATION_THREAD_PRIORITY	(8)
-
 //Events
 #define EVT_EP0						(1 << 1)
-#define EVT_CTLCH0					(1 << 1)
 
 //Endpoints
 #define CY_FX_EP_PRODUCER			0x01	//EP 1 OUT, ZING Control channel
@@ -49,11 +45,6 @@ extern uint8_t glHostRxData[128];
 extern uint32_t glHostRxData_idx;
 extern uint8_t glHostTxData[128];
 extern uint32_t glHostTxData_idx;
-
-// zing control ch thread
-extern CyU3PEvent glControlChEvent;
-extern uint8_t glControlChData[512];
-extern uint32_t glControlChData_idx;
 
 #include "cyu3externcend.h"
 #endif
