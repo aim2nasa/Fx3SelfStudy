@@ -56,7 +56,7 @@ USBSetupCB (
         if ((Setup.Target == CY_U3P_USB_TARGET_INTF) && ((Setup.Request == CY_U3P_USB_SC_SET_FEATURE)
                     || (Setup.Request == CY_U3P_USB_SC_CLEAR_FEATURE)) && (Setup.Value == 0))
         {
-            if (glIsApplnActive)
+            if (IsApplnActive)
                 CyU3PUsbAckSetup ();
             else
             	CyU3PUsbStall(0, CyTrue, CyFalse);
@@ -77,7 +77,7 @@ USBSetupCB (
 		if ((Setup.Target == CY_U3P_USB_TARGET_ENDPT) && (Setup.Request == CY_U3P_USB_SC_CLEAR_FEATURE)
 				&& (Setup.Value == CY_U3P_USBX_FS_EP_HALT))
 		{
-            if (glIsApplnActive)
+            if (IsApplnActive)
             {
                 if (Setup.Index == CY_FX_EP_PRODUCER)
                 {
@@ -188,7 +188,7 @@ USBEventCB (
     {
         case CY_U3P_USB_EVENT_SETCONF:
             /* Stop the application before re-starting. */
-            if (glIsApplnActive)
+            if (IsApplnActive)
             {
                 AppStop ();
             }
@@ -199,7 +199,7 @@ USBEventCB (
         case CY_U3P_USB_EVENT_RESET:
         case CY_U3P_USB_EVENT_DISCONNECT:
             /* Stop the app */
-            if (glIsApplnActive)
+            if (IsApplnActive)
             {
             	AppStop ();
             }

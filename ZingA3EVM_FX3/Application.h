@@ -28,8 +28,7 @@ void AppStart(void);
 void AppStop(void);
 void ApplicationThread(uint32_t Value);
 
-//Extern variables
-extern CyBool_t glIsApplnActive;
+CyBool_t IsApplnActive;
 
 #include "cyu3externcend.h"
 #endif

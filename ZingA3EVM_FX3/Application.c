@@ -13,7 +13,7 @@
 
 //App thread, flag
 CyU3PThread ApplicationThreadHandle;	//Handle to my Application Thread
-CyBool_t glIsApplnActive = CyFalse;		//Whether the application is active or not
+CyBool_t IsApplnActive = CyFalse;		//Whether the application is active or not
 
 /* This function starts the application. This is called
  * when a SET_CONF event is received from the USB host. The endpoints
@@ -84,7 +84,7 @@ void AppStart(void)
 	}
 
 	/* Update the status flag. */
-	glIsApplnActive = CyTrue;
+	IsApplnActive = CyTrue;
 }
 
 /* This function stops the application. This shall be called whenever
@@ -96,7 +96,7 @@ void AppStop(void)
 	CyU3PReturnStatus_t apiRetStatus = CY_U3P_SUCCESS;
 
 	/* Update the flag. */
-	glIsApplnActive = CyFalse;
+	IsApplnActive = CyFalse;
 
 	/* Flush the endpoint memory */
 	CyU3PUsbFlushEp(CY_FX_EP_PRODUCER);
@@ -179,7 +179,7 @@ void ApplicationThread(uint32_t Value)
 	Status = USB_Connect();
 	CheckStatus("[App] USB_Connect", Status);
 
-	while(glIsApplnActive == 0) {
+	while(IsApplnActive == 0) {
 		CyU3PThreadSleep(100);
 	}
 
