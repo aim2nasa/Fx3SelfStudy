@@ -1,12 +1,5 @@
-/*
- * Zing_internal.h
- *
- *  Created on: 2020. 8. 28.
- *      Author: rossi
- */
-
-#ifndef ZING_INTERNAL_H_
-#define ZING_INTERNAL_H_
+#ifndef __ZING_INTERNAL_H__
+#define __ZING_INTERNAL_H__
 
 CyU3PReturnStatus_t Zing_PLLConfig(void);
 void Zing_AllocBuffer(void);
@@ -46,4 +39,4 @@ void Zing_Header2(
         uint16_t addr,
         uint16_t payload_size);
 
-#endif /* ZING_INTERNAL_H_ */
+#endif
