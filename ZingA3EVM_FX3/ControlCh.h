@@ -6,10 +6,14 @@
 
 #define EVT_CTLCH0		(1 << 1)
 
-CyU3PEvent ControlChEvent;
-uint8_t ControlChData[512];
-uint32_t ControlChData_idx;
-uint32_t MngtData;
+typedef struct ConChCtx_t{
+	CyU3PEvent Event_;
+	uint8_t Data_[512];
+	uint32_t Data_idx_;
+	uint32_t MngtData_;
+}ConChCtx_t;
+
+ConChCtx_t CcCtx;
 
 void ControlChThread(uint32_t Value);
 CyU3PReturnStatus_t ControlChThread_Create(void);

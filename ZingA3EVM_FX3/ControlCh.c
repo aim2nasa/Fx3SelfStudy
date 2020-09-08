@@ -28,9 +28,9 @@ void ControlChThread(uint32_t Value)
 				}
 				else if(resp_pt->hdr.target == 1) { //Reg
 					regRead++;
-					memcpy(ControlChData,buf,rt_len);
-					ControlChData_idx = rt_len;
-					CyU3PEventSet (&ControlChEvent, EVT_CTLCH0, CYU3P_EVENT_OR);
+					memcpy(CcCtx.Data_,buf,rt_len);
+					CcCtx.Data_idx_ = rt_len;
+					CyU3PEventSet (&CcCtx.Event_, EVT_CTLCH0, CYU3P_EVENT_OR);
 				}
 				else if(resp_pt->hdr.dir == 1 && resp_pt->hdr.fr_type == 1) { //Management Frame
 					manFrame++;
@@ -41,7 +41,7 @@ void ControlChThread(uint32_t Value)
 					CyU3PDebugPrint (4, "\r\n");
 
 					if(rt_len-ZING_HDR_SIZE == 4) { //EP0 : ZING MNGT_TX4B 12345678 --> ZING MNGT_RX4B
-						MngtData = *(uint32_t*)(buf+ZING_HDR_SIZE);
+						CcCtx.MngtData_ = *(uint32_t*)(buf+ZING_HDR_SIZE);
 					}
 				}
 				CyU3PDebugPrint(4,"[ZCH] Recv:%d Interrupt:%d RegRead:%d ManFrame:%d\n",recv,intEvt,regRead,manFrame);
@@ -59,7 +59,7 @@ CyU3PReturnStatus_t ControlChThread_Create(void)
 	void *StackPtr = NULL;
 	CyU3PReturnStatus_t Status;
 
-	Status = CyU3PEventCreate(&ControlChEvent);
+	Status = CyU3PEventCreate(&CcCtx.Event_);
 	if (Status != CY_U3P_SUCCESS) return Status;
 
 	StackPtr = CyU3PMemAlloc(APPLICATION_THREAD_STACK);

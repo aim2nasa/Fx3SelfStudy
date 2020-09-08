@@ -153,7 +153,7 @@ void USBEP0RxThread(uint32_t Value)
 								Zing_Management_Send((uint8_t*)&arg[0],4);
 							}
 							else if(strcmp(str_tk, "MNGT_RX4B")==0) {	//cmd : ZING MNGT_RX4B
-								memcpy(glHostTxData,(uint8_t*)&MngtData,4);
+								memcpy(glHostTxData,(uint8_t*)&CcCtx.MngtData_,4);
 								glHostTxData_idx = 4;
 							}
 							else if(strcmp(str_tk, "AFC")==0) {			//cmd : ZING AFC 1250000000
