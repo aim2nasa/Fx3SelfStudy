@@ -22,7 +22,6 @@
 #define DBG_LEVEL					(2)		// Print a value less than or equal to DBG_LEVEL
 #define DBG_TYPE_ZING_DBG			(3)
 #define DBG_TYPE_ZING_TR			(3)
-#define DBG_TYPE_I2C				(2)
 
 //Extern func
 void AppStart(void);
