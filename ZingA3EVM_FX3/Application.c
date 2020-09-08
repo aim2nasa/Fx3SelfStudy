@@ -11,8 +11,6 @@
 #include "ControlCh.h"
 #include "USB_EP0.h"
 
-//App thread, flag
-CyU3PThread ApplicationThreadHandle;	//Handle to my Application Thread
 CyBool_t IsApplnActive = CyFalse;		//Whether the application is active or not
 
 /* This function starts the application. This is called

@@ -11,8 +11,7 @@
 #include "cyfx3_api.h"
 #include "cyu3system.h"
 
-extern void ApplicationThread(uint32_t Value);
-extern CyU3PThread ApplicationThreadHandle;
+CyU3PThread ApplicationThreadHandle;
 
 // ApplicationDefine function called by RTOS to startup the application threads
 void CyFxApplicationDefine(void)
