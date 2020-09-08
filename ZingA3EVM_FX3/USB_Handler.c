@@ -29,11 +29,7 @@ extern const uint8_t CyFxUSBSerialNumDscr[];
 #define VENDOR_REQUEST		(2)
 
 /* Callback to handle the USB setup requests. */
-CyBool_t
-USBSetupCB (
-        uint32_t setupdat0, /* SETUP Data 0 */
-        uint32_t setupdat1  /* SETUP Data 1 */
-    )
+CyBool_t USBSetupCB(uint32_t setupdat0,uint32_t setupdat1)
 {
     static uint8_t buffer[128] = {0,};
     uint16_t readcount;
@@ -178,11 +174,7 @@ USBSetupCB (
 }
 
 /* This is the callback function to handle the USB events. */
-void
-USBEventCB (
-    CyU3PUsbEventType_t evtype, /* Event type */
-    uint16_t            evdata  /* Event data */
-    )
+void USBEventCB(CyU3PUsbEventType_t evtype,uint16_t evdata)
 {
     switch (evtype)
     {
@@ -226,16 +218,10 @@ USBEventCB (
    the function always return CyTrue.
    Changed into CyFalse , always active
  */
-CyBool_t
-USBLPMRqtCB (
-        CyU3PUsbLinkPowerMode link_mode)
+CyBool_t USBLPMRqtCB(CyU3PUsbLinkPowerMode link_mode)
 {
     return CyFalse;
 }
-
-
-
-
 
 CyU3PReturnStatus_t USB_Init(void)
 {
