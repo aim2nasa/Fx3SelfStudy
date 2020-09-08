@@ -32,8 +32,6 @@ void USBEP0RxThread(uint32_t Value);
 void AppStart(void);
 void AppStop(void);
 void ApplicationThread(uint32_t Value);
-void ControlChThread(uint32_t Value);
-CyU3PReturnStatus_t ControlChThread_Create(void);
 
 //Extern variables
 extern CyBool_t glIsApplnActive;
