@@ -41,7 +41,7 @@ void USBEP0RxThread(uint32_t Value)
 				switch(glHostReqNum) {
 				case 3:
 					glHostRxData[glHostRxData_idx] = 0;
-					CyU3PDebugPrint (4, "[EP0] HostRxData %s\n",glHostRxData);
+					CyU3PDebugPrint (4, "[EP0] HostRxData:%s\n",glHostRxData);
 
 					if(strcmp((const char *)glHostRxData, "DMA MODE LP") == 0) {
 						DMA_LoopBack_mode();
