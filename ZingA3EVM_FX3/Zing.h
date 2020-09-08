@@ -1,6 +1,7 @@
-
 #ifndef _ZING_
 #define _ZING_
+
+#define ZING_RF_SERDES_PATH		(1)		//0 : serdes path, 1: rf path
 
 extern CyU3PReturnStatus_t Zing_Init(void);
 extern CyU3PReturnStatus_t Zing_RegWrite(uint16_t addr, uint8_t* buf, uint16_t len);

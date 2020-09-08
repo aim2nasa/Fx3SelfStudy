@@ -6,9 +6,6 @@
 #include "AppThread.h"
 #include "cyu3externcstart.h"
 
-//Zing
-#define ZING_RF_SERDES_PATH			(1) // 0 : serdes path, 1: rf path
-
 #define PACKET_SUSPEND				(0) // packet suspend / resume, 0 : disable, 1 : enable (decrease the speed)
 
 //Endpoints
