@@ -154,15 +154,15 @@ CyBool_t USBSetupCB(uint32_t setupdat0,uint32_t setupdat1)
         	if (Setup.Direction == 0) { // host to dev, store data
         	    CyU3PUsbGetEP0Data(sizeof (buffer), (uint8_t *)buffer, &readcount);
         	    CyU3PUsbFlushEp(0);
-        	    memcpy(HostRxData,buffer,readcount);
-        	    HostRxData_idx = readcount;
+        	    memcpy(UsbEp0Ctx.HostRxData_,buffer,readcount);
+        	    UsbEp0Ctx.HostRxData_idx_ = readcount;
 
-        		HostReqNum = Setup.Request;
-        		CyU3PEventSet (&Ep0Event, EVT_EP0, CYU3P_EVENT_OR);
+        	    UsbEp0Ctx.HostReqNum_ = Setup.Request;
+        		CyU3PEventSet (&UsbEp0Ctx.Event_, EVT_EP0, CYU3P_EVENT_OR);
         	}
         	else { // dev to host
-    			if(Setup.Length==HostTxData_idx)
-    				CyU3PUsbSendEP0Data(HostTxData_idx,(uint8_t *)HostTxData);
+    			if(Setup.Length==UsbEp0Ctx.HostTxData_idx_)
+    				CyU3PUsbSendEP0Data(UsbEp0Ctx.HostTxData_idx_,(uint8_t *)UsbEp0Ctx.HostTxData_);
         	}
     	}
 

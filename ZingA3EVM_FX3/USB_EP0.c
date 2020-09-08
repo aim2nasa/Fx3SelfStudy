@@ -20,70 +20,70 @@ void USBEP0RxThread(uint32_t Value)
 	CyU3PDebugPrint (4, "[EP0] USBEP0RxThread start\n");
 	while(1) {
 		CyU3PDebugPrint (4, "[EP0] Event waiting...\n");
-		status = CyU3PEventGet (&Ep0Event, EVT_EP0, CYU3P_EVENT_OR_CLEAR, &evStat, CYU3P_WAIT_FOREVER);
+		status = CyU3PEventGet (&UsbEp0Ctx.Event_, EVT_EP0, CYU3P_EVENT_OR_CLEAR, &evStat, CYU3P_WAIT_FOREVER);
 		CyU3PDebugPrint (4, "[EP0] EventGet return:%d\n",status);
 
 		if (status == CY_U3P_SUCCESS) {
 			if (evStat & EVT_EP0) {
-				CyU3PDebugPrint (4, "[EP0] HostRequestNum:%d\n",HostReqNum);
-				switch(HostReqNum) {
+				CyU3PDebugPrint (4, "[EP0] HostRequestNum:%d\n",UsbEp0Ctx.HostReqNum_);
+				switch(UsbEp0Ctx.HostReqNum_) {
 				case 3:
-					HostRxData[HostRxData_idx] = 0;
-					CyU3PDebugPrint (4, "[EP0] HostRxData:%s\n",HostRxData);
+					UsbEp0Ctx.HostRxData_[UsbEp0Ctx.HostRxData_idx_] = 0;
+					CyU3PDebugPrint (4, "[EP0] HostRxData:%s\n",UsbEp0Ctx.HostRxData_);
 
-					if(strcmp((const char *)HostRxData, "DMA MODE LP") == 0) {
+					if(strcmp((const char *)UsbEp0Ctx.HostRxData_, "DMA MODE LP") == 0) {
 						DMA_LoopBack_mode();
 					}
-					else if(strcmp((const char *)HostRxData, "DMA MODE SINKSOURCE") == 0) {
+					else if(strcmp((const char *)UsbEp0Ctx.HostRxData_, "DMA MODE SINKSOURCE") == 0) {
 						DMA_SinkSource_mode();
 					}
-					else if(strcmp((const char *)HostRxData, "DMA MODE NORMAL") == 0) {
+					else if(strcmp((const char *)UsbEp0Ctx.HostRxData_, "DMA MODE NORMAL") == 0) {
 						DMA_Normal_mode();
 					}
-					else if(strcmp((const char *)HostRxData, "DMA MODE SYNC") == 0) {
+					else if(strcmp((const char *)UsbEp0Ctx.HostRxData_, "DMA MODE SYNC") == 0) {
 						DMA_Sync_mode();
 					}
-					else if(strcmp((const char *)HostRxData, "ZING MODE PPC") == 0) {
+					else if(strcmp((const char *)UsbEp0Ctx.HostRxData_, "ZING MODE PPC") == 0) {
 						Zing_SetHRCP(1);
 					}
-					else if(strcmp((const char *)HostRxData, "ZING MODE DEV") == 0) {
+					else if(strcmp((const char *)UsbEp0Ctx.HostRxData_, "ZING MODE DEV") == 0) {
 						Zing_SetHRCP(0);
 					}
-					else if(strcmp((const char *)HostRxData, "ZING MODE RF_PATH") == 0) {
+					else if(strcmp((const char *)UsbEp0Ctx.HostRxData_, "ZING MODE RF_PATH") == 0) {
 						Zing_SetPath(1); // not tested
 					}
-					else if(strcmp((const char *)HostRxData, "ZING MODE SERDES_PATH") == 0) {
+					else if(strcmp((const char *)UsbEp0Ctx.HostRxData_, "ZING MODE SERDES_PATH") == 0) {
 						Zing_SetPath(0); // not tested
 					}
-					else if(strcmp((const char *)HostRxData, "ZING TEST SENDMSG") == 0) {
+					else if(strcmp((const char *)UsbEp0Ctx.HostRxData_, "ZING TEST SENDMSG") == 0) {
 						{
 							char* msg = "Hey Hi~!";
 							Zing_SendMsg((uint8_t*)msg, strlen(msg));
 						}
 					}
-					else if(strcmp((const char *)HostRxData, "ZING TEST RECVMSG") == 0) {
+					else if(strcmp((const char *)UsbEp0Ctx.HostRxData_, "ZING TEST RECVMSG") == 0) {
 						{
 							char msg[100] = {0,};
 							uint32_t len;
 							Zing_RecvMsg((uint8_t*)msg, &len);
 						}
 					}
-					else if(strcmp((const char *)HostRxData, "ZING RST") == 0) {
+					else if(strcmp((const char *)UsbEp0Ctx.HostRxData_, "ZING RST") == 0) {
 						CyU3PDebugPrint (4, "[EP0] Before Zing_Reset\n");
 						Zing_Reset(0);
 						CyU3PDebugPrint (4, "[EP0] After Zing_Reset\n");
 					}
-					else if(strcmp((const char *)HostRxData, "FX3 RST") == 0) {
+					else if(strcmp((const char *)UsbEp0Ctx.HostRxData_, "FX3 RST") == 0) {
 						CyU3PDeviceReset(CyFalse);
 					}
-					else if(strcmp((const char *)HostRxData, "123") == 0) {
+					else if(strcmp((const char *)UsbEp0Ctx.HostRxData_, "123") == 0) {
 						{
 							char* str_tmp = "Hello";
 							CyU3PUsbSendEP0Data(5,(uint8_t *)str_tmp);
 						}
 					}
 					else {
-						str_tk = strtok((char *)HostRxData, " ");
+						str_tk = strtok((char *)UsbEp0Ctx.HostRxData_, " ");
 						if(strcmp(str_tk, "ZING")==0) {
 							str_tk = strtok(NULL, " ");
 							if(strcmp(str_tk, "REGW")==0) {	//cmd : ZING REGW 8001 12345678
@@ -105,8 +105,8 @@ void USBEP0RxThread(uint32_t Value)
 								arg[0] = (uint32_t)strtoul(str_tk, NULL, 16);	//first argument
 								if(arg[0] >= REGISTER_START_ADDR && arg[0] <= REGISTER_END_ADDR)	//check range
 								{
-									Zing_RegRead((uint16_t)arg[0],(uint8_t*)HostTxData,4);
-									HostTxData_idx = 4;
+									Zing_RegRead((uint16_t)arg[0],(uint8_t*)UsbEp0Ctx.HostTxData_,4);
+									UsbEp0Ctx.HostTxData_idx_ = 4;
 								}
 								else
 								{
@@ -141,8 +141,8 @@ void USBEP0RxThread(uint32_t Value)
 								Zing_Management_Send((uint8_t*)&arg[0],4);
 							}
 							else if(strcmp(str_tk, "MNGT_RX4B")==0) {	//cmd : ZING MNGT_RX4B
-								memcpy(HostTxData,(uint8_t*)&CcCtx.MngtData_,4);
-								HostTxData_idx = 4;
+								memcpy(UsbEp0Ctx.HostTxData_,(uint8_t*)&CcCtx.MngtData_,4);
+								UsbEp0Ctx.HostTxData_idx_ = 4;
 							}
 							else if(strcmp(str_tk, "AFC")==0) {			//cmd : ZING AFC 1250000000
 								str_tk = strtok(NULL, " ");
@@ -164,7 +164,7 @@ void USBEP0RxThread(uint32_t Value)
 					break;
 				}
 			}
-			HostRxData_idx = 0;
+			UsbEp0Ctx.HostRxData_idx_ = 0;
 		}
 	}
 	CyU3PDebugPrint (4, "[EP0] USBEP0RxThread end\n");
@@ -175,7 +175,7 @@ CyU3PReturnStatus_t USBEP0RxThread_Create(void)
     void *StackPtr = NULL;
     CyU3PReturnStatus_t Status;
 
-    Status = CyU3PEventCreate(&Ep0Event);
+    Status = CyU3PEventCreate(&UsbEp0Ctx.Event_);
     if(Status!=CY_U3P_SUCCESS) return Status;
 
     StackPtr = CyU3PMemAlloc(APPLICATION_THREAD_STACK);
