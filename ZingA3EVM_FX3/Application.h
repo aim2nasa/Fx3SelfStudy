@@ -11,9 +11,6 @@
 
 #define PACKET_SUSPEND				(0) // packet suspend / resume, 0 : disable, 1 : enable (decrease the speed)
 
-//Events
-#define EVT_EP0						(1 << 1)
-
 //Endpoints
 #define CY_FX_EP_PRODUCER			0x01	//EP 1 OUT, ZING Control channel
 #define CY_FX_EP_CONSUMER			0x81    //EP 1 IN
@@ -28,21 +25,12 @@
 #define DBG_TYPE_I2C				(2)
 
 //Extern func
-void USBEP0RxThread(uint32_t Value);
 void AppStart(void);
 void AppStop(void);
 void ApplicationThread(uint32_t Value);
 
 //Extern variables
 extern CyBool_t glIsApplnActive;
-
-// extern ep0
-extern CyU3PEvent glEp0Event;		//Event group used to signal the thread
-extern uint32_t glHostReqNum;
-extern uint8_t glHostRxData[128];
-extern uint32_t glHostRxData_idx;
-extern uint8_t glHostTxData[128];
-extern uint32_t glHostTxData_idx;
 
 #include "cyu3externcend.h"
 #endif

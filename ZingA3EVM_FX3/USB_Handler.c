@@ -1,5 +1,6 @@
 #include "Application.h"
 #include "DebugConsole.h"
+#include "USB_Handler.h"
 #include "LPP.h"
 #include "cyu3error.h"
 #include "cyu3usbconst.h"
@@ -7,6 +8,7 @@
 #include "cyu3utils.h"
 #include "cyu3gpio.h"
 #include "dma.h"
+#include "USB_EP0.h"
 
 /* Extern definitions for the USB Descriptors */
 extern const uint8_t CyFxUSB20DeviceDscr[];
@@ -25,36 +27,6 @@ extern const uint8_t CyFxUSBSerialNumDscr[];
 #define STANDARD_REQUEST	(0)			// My values are not shifted
 #define CLASS_REQUEST		(1)
 #define VENDOR_REQUEST		(2)
-
-
-CyU3PThread EP0ThreadHandle;	// Handle to my Application Thread
-
-
-
-CyU3PReturnStatus_t USBEP0RxThread_Create(void)
-{
-    void *StackPtr = NULL;
-    CyU3PReturnStatus_t Status;
-
-    Status = CyU3PEventCreate(&glEp0Event);
-    if(Status!=CY_U3P_SUCCESS) return Status;
-
-    StackPtr = CyU3PMemAlloc(APPLICATION_THREAD_STACK);
-    Status = CyU3PThreadCreate(&EP0ThreadHandle,	// Handle to my Application Thread
-            "12:tmp",                		// Thread ID and name
-            USBEP0RxThread,     					// Thread entry function
-            0,                             		// Parameter passed to Thread
-            StackPtr,                       		// Pointer to the allocated thread stack
-            APPLICATION_THREAD_STACK,               // Allocated thread stack size
-            APPLICATION_THREAD_PRIORITY,            // Thread priority
-            APPLICATION_THREAD_PRIORITY,            // = Thread priority so no preemption
-            CYU3P_NO_TIME_SLICE,            		// Time slice no supported
-            CYU3P_AUTO_START                		// Start the thread immediately
-            );
-
-    return Status;
-}
-
 
 /* Callback to handle the USB setup requests. */
 CyBool_t
@@ -186,15 +158,15 @@ USBSetupCB (
         	if (Setup.Direction == 0) { // host to dev, store data
         	    CyU3PUsbGetEP0Data(sizeof (buffer), (uint8_t *)buffer, &readcount);
         	    CyU3PUsbFlushEp(0);
-        	    memcpy(glHostRxData,buffer,readcount);
-        	    glHostRxData_idx = readcount;
+        	    memcpy(HostRxData,buffer,readcount);
+        	    HostRxData_idx = readcount;
 
-        		glHostReqNum = Setup.Request;
-        		CyU3PEventSet (&glEp0Event, EVT_EP0, CYU3P_EVENT_OR);
+        		HostReqNum = Setup.Request;
+        		CyU3PEventSet (&Ep0Event, EVT_EP0, CYU3P_EVENT_OR);
         	}
         	else { // dev to host
-    			if(Setup.Length==glHostTxData_idx)
-    				CyU3PUsbSendEP0Data(glHostTxData_idx,(uint8_t *)glHostTxData);
+    			if(Setup.Length==HostTxData_idx)
+    				CyU3PUsbSendEP0Data(HostTxData_idx,(uint8_t *)HostTxData);
         	}
     	}
 
