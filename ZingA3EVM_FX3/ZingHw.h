@@ -1,31 +1,21 @@
 #ifndef __ZING_HW_H__
 #define __ZING_HW_H__
 
-// I2C -------------------------------------------------------------------------------------------------------------------
+//I2C
 #define I2C_DeviceAddress				(0x08)
 
-
-// etc -------------------------------------------------------------------------------------------------------------------
+//etc
 #define ZING_HW_TIMEOUT     1000                /* 1000 ms */
 #define AFC_N	64
 
-
-
-/*
- * Zing Header -------------------------------------------------------------------------------------------------------------------
- */
+//Zing Header
 #define ZING_HDR_SIZE               8       /* 8 bytes */
-
 #define ZING_HDR_DIR_EGRESS         0       /* Direction SW -> HW */
 #define ZING_HDR_DIR_INGRESS        1       /* Direction HW -> SW */
-
 #define ZING_HDR_TARGET_BUFFER      0
 #define ZING_HDR_TARGET_REG         1
-
 #define ZING_HDR_ACTION_WRITE       1
 #define ZING_HDR_ACTION_READ        0
-
-
 
 typedef struct zing_header
 {
@@ -45,9 +35,7 @@ typedef struct zing_header
     unsigned int length     : 16;   /* 63:48 Data length in bytes */
 } ZingHdr_t;
 
-
-
-// Register -------------------------------------------------------------------------------------------------------------------
+//Register
 #define REG_HW_CFG              0x8000          /* Enable, software reset */
 #define REG_IFS                 0x8001
 #define REG_SUPERFRAME_CFG      0x8002
@@ -61,12 +49,10 @@ typedef struct zing_header
 #define REG_PHY_TIMEOUT_CFG     0x800b
 #define REG_MAC_RETX_LIMIT      0x800c
 #define REG_RTL_VERSION      	0x801f
+#define REGISTER_START_ADDR		0x8000
+#define REGISTER_END_ADDR		0x83FF
 
-#define REGISTER_START_ADDR         0x8000
-#define REGISTER_END_ADDR           0x83FF
-
-
-// Register bit field & init value -------------------------------------------------------------------------------------------------------------------
+//Register bit field & init value
 #define PPC		(1)
 #define DEV		(0)
 
@@ -75,41 +61,30 @@ typedef struct zing_header
                                     ((associated&0x1) << 8) | ((sf&0x1) << 12) | ((channel&0x1) << 13) |  ((golay&0x1) << 14) | \
                                     ((agg_no&0xF) << 16) | ((max_len&0x1) << 20) |  ((msdu_only&0x1) << 24) | ((boundary_1k&0x1) << 25) | \
                                     ((gpif16&0x1) << 26) | ((phy_init_n&0x1) << 30) | ((init_n&0x1) << 31) )
-#define REG_HW_CFG_INIT_STAGE0      REG_CFG_B(1,1,1, 0,0,0,0, 1,0,0, 0,0,0,0) /* ppc, max_aggregation 1 */
-#define REG_HW_CFG_INIT_STAGE1      REG_CFG_B(1,1,1, 0,0,0,0, 1,1,1, 1,0,1,1) /* MSDU max length 8K, MSDU only mode, 1k boundary */
-#define REG_HW_CFG_INIT_STAGE2      REG_CFG_B(1,1,1, 1,0,1,0, 4,1,1, 1,0,1,1)  /* associated(ACK), bonding 2CH, max_aggregation 4 */
+#define REG_HW_CFG_INIT_STAGE0	REG_CFG_B(1,1,1, 0,0,0,0, 1,0,0, 0,0,0,0) /* ppc, max_aggregation 1 */
+#define REG_HW_CFG_INIT_STAGE1	REG_CFG_B(1,1,1, 0,0,0,0, 1,1,1, 1,0,1,1) /* MSDU max length 8K, MSDU only mode, 1k boundary */
+#define REG_HW_CFG_INIT_STAGE2	REG_CFG_B(1,1,1, 1,0,1,0, 4,1,1, 1,0,1,1)  /* associated(ACK), bonding 2CH, max_aggregation 4 */
 
+#define REG_IFS_B(sifs,rifs)    				((sifs&0xFF) | ((rifs&0xFF) <<8))
+#define REG_IFS_PPC_INIT            			REG_IFS_B(25, 94)
+#define REG_IFS_DEV_INIT            			REG_IFS_B(25, 230)
 
-#define REG_IFS_B(sifs,rifs)    ((sifs&0xFF) | ((rifs&0xFF) <<8))
-#define REG_IFS_PPC_INIT            REG_IFS_B(25, 94)
-#define REG_IFS_DEV_INIT            REG_IFS_B(25, 230)
-
-#define REG_SUPERFRAME_B(duration, access_time)     ((duration&0xFFFF) | ((access_time&0xFFFF) <<16))
+#define REG_SUPERFRAME_B(duration, access_time)	((duration&0xFFFF) | ((access_time&0xFFFF) <<16))
 /* It is recommended that an HRCP DEV should use short ATP length value less than or equal to 500 ms. */
-#define ZING_ATP_TIMEOUT    200                 /* 200 ms temporal */
-#define ZING_SUPERFRAME_DURATION    50000       /* 5 ms (0.1us resolution) */
-#define REG_SUPERFRAME_INIT     REG_SUPERFRAME_B(ZING_SUPERFRAME_DURATION, 500)
+#define ZING_ATP_TIMEOUT						200	/* 200 ms temporal */
+#define ZING_SUPERFRAME_DURATION				50000	/* 5 ms (0.1us resolution) */
+#define REG_SUPERFRAME_INIT						REG_SUPERFRAME_B(ZING_SUPERFRAME_DURATION, 500)
+#define REG_PPID_INIT							0xABCD
+#define REG_PHY_CONTROL_INIT					0xD6010
+#define REG_PLL_SERDES_INIT2					0x20013	/* 0x10 : RF I2C block clock gating off, 0x03 : Serdes Tx Amplify */
+#define REG_DEVID_B(ppcid,devid)				((ppcid&0xFF) | ((devid&0xFF) << 8) )
+#define REG_DEVID_INIT							REG_DEVID_B(0x0, 0x35)
+#define REG_MAC_TIMEOUT_B(link, command)		((link&0xFFFF) | ((command&0xFFFF) <<16))
+#define REG_MAC_TIMEOUT_INIT					REG_MAC_TIMEOUT_B(10000, 5000)    /* 1ms, 500us 0.1us resolution */
+#define REG_PHY_TIMEOUT_INIT					2000    /* 200us */
+#define REG_RETRANSMIT_LIMIT_INIT				1000
 
-#define REG_PPID_INIT           0xABCD
-
-#define REG_PHY_CONTROL_INIT    0xD6010
-
-#define REG_PLL_SERDES_INIT2    0x20013        /* 0x10 : RF I2C block clock gating off, 0x03 : Serdes Tx Amplify */
-
-#define REG_DEVID_B(ppcid,devid)   ((ppcid&0xFF) | ((devid&0xFF) << 8) )
-#define REG_DEVID_INIT          REG_DEVID_B(0x0, 0x35)
-
-#define REG_MAC_TIMEOUT_B(link, command)    ((link&0xFFFF) | ((command&0xFFFF) <<16))
-#define REG_MAC_TIMEOUT_INIT    REG_MAC_TIMEOUT_B(10000, 5000)    /* 1ms, 500us 0.1us resolution */
-
-#define REG_PHY_TIMEOUT_INIT    2000    /* 200us */
-
-#define REG_RETRANSMIT_LIMIT_INIT   1000
-
-
-
-// Register Structure -------------------------------------------------------------------------------------------------------------------
-
+//Register Structure
 typedef struct {
 	unsigned int tx_en        		: 1; // 0
 	unsigned int rx_en        		: 1; // 1
@@ -133,8 +108,6 @@ typedef struct {
 	unsigned int init_n        	 	: 1; // 31
 } HW_CFG;
 
-
-
 typedef struct REG_Block_0
 {
     /* Configuration Registers */
@@ -142,17 +115,14 @@ typedef struct REG_Block_0
     unsigned int ifs_cfg;           /* 0x01, IFS configuration */
     unsigned int superframe_cfg;    /* 0x02, Super frame configuration */
     unsigned int ppid;
-
     unsigned int device_id;         /* 0x04 */
     unsigned int pll_ctrl_100;      /* 0x05 */
     unsigned int phy_control;       /* 0x06 */
     unsigned int pll_ctrl_110;      /* 0x07 */
-
     unsigned int pll_ctrl_serdes;   /* 0x08 */
     unsigned int rsvd0;             /* 0x09 */
     unsigned int mac_timeout;       /* 0x0a */
     unsigned int phy_timeout;       /* 0x0b */
-
     unsigned int mac_limit_cfg;     /* 0x0c */
     unsigned int rsvd1[3];          /* 0x0d ~ 0x0f */
 
@@ -161,22 +131,18 @@ typedef struct REG_Block_0
     unsigned int mac_ctrl_status;   /* 0x11 */
     unsigned int mac_data_status;   /* 0x12 */
     unsigned int mac_bd_status;     /* 0x13 */
-
     unsigned int phy_status;        /* 0x14 */
     unsigned int phy_error_cnt;     /* 0x15 */
     unsigned int mac_tx_frame_cnt;  /* 0x16 */
     unsigned int mac_tx_subfr_cnt;  /* 0x17 */
-
     unsigned int mac_rx_frame_cnt;  /* 0x18 */
     unsigned int mac_rx_subfr_cnt;  /* 0x19 */
     unsigned int mac_seq_status;    /* 0x1a */
     unsigned int mac_retx_cnt;      /* 0x1b */
-
     unsigned int phy_tx_cnt;        /* 0x1c */
     unsigned int phy_rx_cnt;        /* 0x1d */
     unsigned int gpif_count;        /* 0x1e */
     unsigned int rtl_version;       /* 0x1f, RTL Revision Number */
-
 } REG_B0_t;
 
 typedef struct REG_Block_1
@@ -185,17 +151,14 @@ typedef struct REG_Block_1
     unsigned int gpio0_out;
     unsigned int gpio0_in;
     unsigned int rsvd0;
-
     unsigned int gpio1_out_en;      /* 0x24 */
     unsigned int gpio1_out;
     unsigned int gpio1_in;
     unsigned int rsvd1;
-
     unsigned int I2C_reg_in_0;      /* 0x28 */
     unsigned int I2C_reg_in_1;
     unsigned int I2C_reg_in_2;
     unsigned int I2C_reg_in_3;
-
     unsigned int rsvd2[4];          /* 0x2C ~ 0x2F */
 
     /* MAC error count */
@@ -218,7 +181,6 @@ typedef struct REG_Block_1
     unsigned int duplicated_frame;
     unsigned int phy_rx_error;
     unsigned int rsvd3;
-
 } REG_B1_t;
 
 /* Tx/Rx Buffer Descriptor */
@@ -248,7 +210,6 @@ typedef struct BD_Block_0
 typedef struct BD_Block_1
 {
     BD_t    mgmtbd[2];
-
     unsigned int rsvd[28];
 } BD_B1_t;
 
@@ -263,6 +224,5 @@ typedef struct REG_Resp_Block
         BD_B1_t  bd1; // addr : 0x8420 ~ 0x8423 , Management BD(Buffer Descriptor)
     } regs;
 } REG_Resp_t;
-
 
 #endif
