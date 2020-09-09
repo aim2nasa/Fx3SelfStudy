@@ -1,10 +1,10 @@
 #include "ControlCh.h"
 #include "ZingHw.h"
-#include "dma.h"
+#include "..\dma\dma.h"
 #include "Zing.h"
 #include "cyu3error.h"
 #include "cyu3system.h"
-#include "AppThread.h"
+#include "..\AppThread.h"
 
 CyU3PThread ControlChThreadHandle;
 

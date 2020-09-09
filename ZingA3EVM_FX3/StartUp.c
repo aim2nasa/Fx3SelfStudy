@@ -1,5 +1,5 @@
 #include "Application.h"
-#include "gpio.h"
+#include "gpio\gpio.h"
 #include "cyu3error.h"
 #include "cyfx3_api.h"
 #include "cyu3system.h"

@@ -1,11 +1,11 @@
-#include "Application.h"
-#include "DebugConsole.h"
+#include "..\Application.h"
+#include "..\uart\DebugConsole.h"
 #include "USB_Handler.h"
-#include "gpio.h"
+#include "..\gpio\gpio.h"
 #include "cyu3error.h"
 #include "cyu3utils.h"
 #include "cyu3gpio.h"
-#include "dma.h"
+#include "..\dma\dma.h"
 #include "USB_EP0.h"
 
 /* Extern definitions for the USB Descriptors */

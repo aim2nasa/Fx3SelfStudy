@@ -32,7 +32,7 @@
  * CyU3PDeviceCacheControl for more information.
  */
 
-#include "Application.h"
+#include "..\Application.h"
 #include "cyu3usbconst.h"
 #include "cyu3types.h"
 

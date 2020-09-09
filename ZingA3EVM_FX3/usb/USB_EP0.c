@@ -1,12 +1,12 @@
 #include "USB_EP0.h"
 #include "cyu3error.h"
 #include "cyu3system.h"
-#include "dma.h"
-#include "Zing.h"
+#include "..\dma\dma.h"
+#include "..\zing\Zing.h"
 #include "cyu3usb.h"
-#include "ZingHw.h"
-#include "ControlCh.h"
-#include "AppThread.h"
+#include "..\zing\ZingHw.h"
+#include "..\zing\ControlCh.h"
+#include "..\AppThread.h"
 
 CyU3PThread EP0ThreadHandle;
 

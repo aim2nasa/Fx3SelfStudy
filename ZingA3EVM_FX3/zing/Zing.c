@@ -1,13 +1,13 @@
 #include "Zing.h"
 #include "Zing_internal.h"
 #include "Support.h"
-#include "PIB.h"
-#include "i2c.h"
-#include "gpio.h"
+#include "..\gpif\PIB.h"
+#include "..\i2c\i2c.h"
+#include "..\gpio\gpio.h"
 #include "ZingHw.h"
 #include "cyu3error.h"
 #include "cyu3gpio.h"
-#include "dma.h"
+#include "..\dma\dma.h"
 #include "ControlCh.h"
 #include <math.h>
 
