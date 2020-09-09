@@ -24,5 +24,18 @@ void ApplicationThread(uint32_t Value);
 
 CyBool_t IsApplnActive;
 
+//Extern definitions for the USB Descriptors
+extern const uint8_t CyFxUSB20DeviceDscr[];
+extern const uint8_t CyFxUSB30DeviceDscr[];
+extern const uint8_t CyFxUSBDeviceQualDscr[];
+extern const uint8_t CyFxUSBFSConfigDscr[];
+extern const uint8_t CyFxUSBHSConfigDscr[];
+extern const uint8_t CyFxUSBBOSDscr[];
+extern const uint8_t CyFxUSBSSConfigDscr[];
+extern const uint8_t CyFxUSBStringLangIDDscr[];
+extern const uint8_t CyFxUSBManufactureDscr[];
+extern const uint8_t CyFxUSBProductDscr[];
+extern const uint8_t CyFxUSBSerialNumDscr[];
+
 #include "cyu3externcend.h"
 #endif

@@ -8,19 +8,6 @@
 #include "..\dma\dma.h"
 #include "USB_EP0.h"
 
-/* Extern definitions for the USB Descriptors */
-extern const uint8_t CyFxUSB20DeviceDscr[];
-extern const uint8_t CyFxUSB30DeviceDscr[];
-extern const uint8_t CyFxUSBDeviceQualDscr[];
-extern const uint8_t CyFxUSBFSConfigDscr[];
-extern const uint8_t CyFxUSBHSConfigDscr[];
-extern const uint8_t CyFxUSBBOSDscr[];
-extern const uint8_t CyFxUSBSSConfigDscr[];
-extern const uint8_t CyFxUSBStringLangIDDscr[];
-extern const uint8_t CyFxUSBManufactureDscr[];
-extern const uint8_t CyFxUSBProductDscr[];
-extern const uint8_t CyFxUSBSerialNumDscr[];
-
 // setup data
 #define STANDARD_REQUEST	(0)			// My values are not shifted
 #define CLASS_REQUEST		(1)
